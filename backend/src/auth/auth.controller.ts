@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RefreshDto } from './dto/refresh.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { JwtAuthGuard } from './jwt/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -24,5 +25,11 @@ export class AuthController {
       refreshDto.userId,
       refreshDto.refreshToken,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile() {
+    return { message: 'Protected route works' };
   }
 }
