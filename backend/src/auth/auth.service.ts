@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -64,12 +65,16 @@ export class AuthService {
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
-    const hashed = await bcrypt.hash(refreshToken, 10);
+    const preHashed = this.hashTokenBeforeBcrypt(refreshToken);
+    const hashed = await bcrypt.hash(preHashed, 10);
 
     await this.prisma.user.update({
       where: { id: userId },
       data: { refreshToken: hashed },
     });
+    console.log('new', refreshToken);
+    console.log('new prehashed', preHashed);
+    console.log('new hashed', hashed);
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
@@ -78,13 +83,19 @@ export class AuthService {
     if (!user || !user.refreshToken)
       throw new UnauthorizedException('Access Denied');
 
-    const refreshMatches = await bcrypt.compare(
-      refreshToken,
-      user.refreshToken,
-    );
+    const preHashed = this.hashTokenBeforeBcrypt(refreshToken);
+    const refreshMatches = await bcrypt.compare(preHashed, user.refreshToken);
 
-    if (refreshMatches) throw new UnauthorizedException('Access Denied');
+    console.log('old', refreshToken);
+    console.log('prehashed', preHashed);
+    console.log('matched', refreshMatches);
+
+    if (!refreshMatches) throw new UnauthorizedException('Access Denied');
 
     return this.generateTokens(user.id, user.email);
+  }
+
+  private hashTokenBeforeBcrypt(token: string) {
+    return crypto.createHash('sha256').update(token).digest('hex');
   }
 }
