@@ -24,7 +24,7 @@ export class AuthService {
       },
     });
 
-    return this.generateTokens(user.id, user.email);
+    return this.generateTokens(user.id, user.email, user.role);
   }
 
   async login(loginDto: LoginDto) {
@@ -42,24 +42,26 @@ export class AuthService {
     if (!passwordMatches)
       throw new UnauthorizedException('Invalid credentials');
 
-    return this.generateTokens(user.id, user.email);
+    return this.generateTokens(user.id, user.email, user.role);
   }
 
-  async generateTokens(userId: string, email: string) {
+  async generateTokens(userId: string, email: string, role: string) {
     const accessToken = await this.jwt.signAsync(
       {
         sub: userId,
         email,
+        role,
       },
       { secret: process.env.JWT_SECRET, expiresIn: '15m' },
     );
 
     const refreshToken = await this.jwt.signAsync(
-      { sub: userId, email },
+      { sub: userId, email, role },
       { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
     );
 
     await this.updateRefreshToken(userId, refreshToken);
+    console.log('user role', role, '<-> user email', email);
 
     return { accessToken, refreshToken };
   }
@@ -85,7 +87,7 @@ export class AuthService {
 
     if (!refreshMatches) throw new UnauthorizedException('Access Denied');
 
-    return this.generateTokens(user.id, user.email);
+    return this.generateTokens(user.id, user.email, user.role);
   }
 
   private hashTokenBeforeBcrypt(token: string) {
