@@ -72,9 +72,6 @@ export class AuthService {
       where: { id: userId },
       data: { refreshToken: hashed },
     });
-    console.log('new', refreshToken);
-    console.log('new prehashed', preHashed);
-    console.log('new hashed', hashed);
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
@@ -85,10 +82,6 @@ export class AuthService {
 
     const preHashed = this.hashTokenBeforeBcrypt(refreshToken);
     const refreshMatches = await bcrypt.compare(preHashed, user.refreshToken);
-
-    console.log('old', refreshToken);
-    console.log('prehashed', preHashed);
-    console.log('matched', refreshMatches);
 
     if (!refreshMatches) throw new UnauthorizedException('Access Denied');
 
