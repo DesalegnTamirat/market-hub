@@ -53,6 +53,17 @@ export class AuthService {
       { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
     );
 
+    await this.updateRefreshToken(userId, refreshToken);
+
     return { accessToken, refreshToken };
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    const hashed = await bcrypt.hash(refreshToken, 10);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: hashed },
+    });
   }
 }
