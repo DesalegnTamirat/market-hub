@@ -7,7 +7,13 @@ import { AuthModule } from './auth/auth.module';
 import { StoresModule } from './stores/stores.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), PrismaModule, AuthModule, StoresModule],
+  imports: [
+    ConfigModule.forRoot(),
+    PrismaModule,
+    AuthModule,
+    StoresModule,
+    StoresModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
