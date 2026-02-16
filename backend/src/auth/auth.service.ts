@@ -61,7 +61,6 @@ export class AuthService {
     );
 
     await this.updateRefreshToken(userId, refreshToken);
-    console.log('user role', role, '<-> user email', email);
 
     return { accessToken, refreshToken };
   }
