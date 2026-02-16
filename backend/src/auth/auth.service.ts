@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +14,15 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    // Check if user already exists
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: registerDto.email },
+    });
+
+    if (existingUser) {
+      throw new UnauthorizedException('Email already in use');
+    }
+
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
     const user = await this.prisma.user.create({
@@ -43,6 +52,15 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
 
     return this.generateTokens(user.id, user.email, user.role);
+  }
+
+  async logout(userId: string) {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: null },
+    });
+
+    return { message: 'Logged out successfully' };
   }
 
   async generateTokens(userId: string, email: string, role: string) {

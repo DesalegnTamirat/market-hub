@@ -20,6 +20,12 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  logout(@Req() req: RequestWithUser) {
+    return this.authService.logout(req.user.sub);
+  }
+
   @UseGuards(RefreshTokenGuard)
   @Post('refresh')
   refresh(@Req() req: RequestWithUser) {
@@ -28,7 +34,13 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile() {
-    return { message: 'Protected route works' };
+  getProfile(@Req() req: RequestWithUser) {
+    return {
+      user: {
+        id: req.user.sub,
+        email: req.user.email,
+        role: req.user.role,
+      },
+    };
   }
 }
