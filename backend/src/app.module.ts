@@ -13,7 +13,6 @@ import { ProductsModule } from './products/products.module';
     PrismaModule,
     AuthModule,
     StoresModule,
-    StoresModule,
     ProductsModule,
   ],
   controllers: [AppController],
