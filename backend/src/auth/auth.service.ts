@@ -70,7 +70,7 @@ export class AuthService {
         email,
         role,
       },
-      { secret: process.env.JWT_SECRET, expiresIn: '15m' },
+      { secret: process.env.JWT_SECRET, expiresIn: '20d' },
     );
 
     const refreshToken = await this.jwt.signAsync(
