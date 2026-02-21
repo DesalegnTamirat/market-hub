@@ -105,11 +105,11 @@ model Order {
   customerId String
   customer   User   @relation(fields: [customerId], references: [id])
 
-  shippingAddress Json
+  shippingAddress 
 
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  orderItems OrderItem[]
+  items OrderItem[]
   payment    Payment?
 
   @@index([customerId])
@@ -117,7 +117,7 @@ model Order {
 }
 
 enum OrderStatus {
-  PENDING
+  PJsonENDING
   PAID
   PROCESSING
   SHIPPED
