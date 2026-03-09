@@ -17,6 +17,7 @@ export class CartService {
       where: { userId },
       include: {
         items: {
+          orderBy: { createdAt: 'asc' },
           include: {
             product: {
               include: {
@@ -33,6 +34,7 @@ export class CartService {
         data: { userId },
         include: {
           items: {
+            orderBy: { createdAt: 'asc' },
             include: {
               product: {
                 include: {
@@ -229,6 +231,6 @@ export class CartService {
       where: { cartId: cart.id },
     });
 
-    return { message: 'Cart cleared successfully' };
+    return this.getCart(userId);
   }
 }
