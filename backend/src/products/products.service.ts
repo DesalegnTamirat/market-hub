@@ -45,6 +45,35 @@ export class ProductsService {
     });
   }
 
+  async getProductById(productId: string) {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            isActive: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return product;
+  }
+
   async updateProduct(
     user: JwtPayload,
     productId: string,

@@ -36,6 +36,11 @@ export class ProductsController {
     return this.productsService.getAllProducts();
   }
 
+  @Get(':id')
+  getOne(@Param('id') id: string) {
+    return this.productsService.getProductById(id);
+  }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('VENDOR')
   @Patch(':id')
