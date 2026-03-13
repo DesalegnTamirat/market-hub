@@ -18,6 +18,7 @@ interface AuthState {
   checkAuth: () => Promise<void>;
   clearError: () => void;
   setHydrated: () => void;
+  setAuthData: (accessToken: string, refreshToken: string, user?: User) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -31,6 +32,14 @@ export const useAuthStore = create<AuthState>()(
       isHydrated: false,
 
       setHydrated: () => set({ isHydrated: true }),
+      
+      setAuthData: (accessToken: string, refreshToken: string, user?: User) => {
+        if (user) {
+          set({ accessToken, refreshToken, user });
+        } else {
+          set({ accessToken, refreshToken });
+        }
+      },
 
       login: async (credentials: LoginCredentials) => {
         try {
@@ -41,19 +50,12 @@ export const useAuthStore = create<AuthState>()(
             credentials,
           );
 
-          // Save tokens
-          localStorage.setItem('accessToken', data.accessToken);
-          localStorage.setItem('refreshToken', data.refreshToken);
-
           set({
             accessToken: data.accessToken,
             refreshToken: data.refreshToken,
+            user: data.user,
+            isLoading: false,
           });
-
-          // Get user profile
-          await get().checkAuth();
-
-          set({ isLoading: false });
         } catch (error) {
           const message = handleApiError(error);
           set({ error: message, isLoading: false });
@@ -67,19 +69,12 @@ export const useAuthStore = create<AuthState>()(
 
           const response = await api.post<AuthResponse>('/auth/register', data);
 
-          // Save tokens
-          localStorage.setItem('accessToken', response.data.accessToken);
-          localStorage.setItem('refreshToken', response.data.refreshToken);
-
           set({
             accessToken: response.data.accessToken,
             refreshToken: response.data.refreshToken,
+            user: response.data.user,
+            isLoading: false,
           });
-
-          // Get user profile
-          await get().checkAuth();
-
-          set({ isLoading: false });
         } catch (error) {
           const message = handleApiError(error);
           set({ error: message, isLoading: false });
@@ -92,10 +87,6 @@ export const useAuthStore = create<AuthState>()(
         api.post('/auth/logout').catch(() => {
           // Ignore errors, logout anyway
         });
-
-        // Clear local storage
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
 
         // Clear state
         set({

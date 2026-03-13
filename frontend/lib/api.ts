@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { ApiError } from '@/types';
+import { useAuthStore } from '@/store/auth.store';
 
 // Create axios instance
 export const api = axios.create({
@@ -12,7 +13,7 @@ export const api = axios.create({
 // Request interceptor - Add auth token
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('accessToken');
+    const token = useAuthStore.getState().accessToken;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -36,7 +37,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = useAuthStore.getState().refreshToken;
         if (!refreshToken) {
           throw new Error('No refresh token');
         }
@@ -52,8 +53,11 @@ api.interceptors.response.use(
         );
 
         // Save new tokens
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
+        useAuthStore.getState().setAuthData(
+          data.accessToken,
+          data.refreshToken,
+          data.user
+        );
 
         // Retry original request with new token
         if (originalRequest.headers) {
@@ -62,9 +66,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         // Refresh failed, logout user
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        useAuthStore.getState().logout();
         return Promise.reject(refreshError);
       }
     }
@@ -102,7 +104,7 @@ export const uploadApi = axios.create({
 // Add auth token to upload requests
 uploadApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('accessToken');
+    const token = useAuthStore.getState().accessToken;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -34,7 +34,7 @@ export class AuthService {
       },
     });
 
-    return this.generateTokens(user.id, user.email, user.role);
+    return this.generateTokens(user);
   }
 
   async login(loginDto: LoginDto) {
@@ -52,7 +52,7 @@ export class AuthService {
     if (!passwordMatches)
       throw new UnauthorizedException('Invalid credentials');
 
-    return this.generateTokens(user.id, user.email, user.role);
+    return this.generateTokens(user);
   }
 
   async logout(userId: string) {
@@ -76,24 +76,38 @@ export class AuthService {
     };
   }
 
-  async generateTokens(userId: string, email: string, role: string) {
+  async generateTokens(user: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  }) {
     const accessToken = await this.jwt.signAsync(
       {
-        sub: userId,
-        email,
-        role,
+        sub: user.id,
+        email: user.email,
+        role: user.role,
       },
       { secret: process.env.JWT_SECRET, expiresIn: '20d' },
     );
 
     const refreshToken = await this.jwt.signAsync(
-      { sub: userId, email, role },
+      { sub: user.id, email: user.email, role: user.role },
       { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' },
     );
 
-    await this.updateRefreshToken(userId, refreshToken);
+    await this.updateRefreshToken(user.id, refreshToken);
 
-    return { accessToken, refreshToken };
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
@@ -117,7 +131,7 @@ export class AuthService {
 
     if (!refreshMatches) throw new UnauthorizedException('Access Denied');
 
-    return this.generateTokens(user.id, user.email, user.role);
+    return this.generateTokens(user);
   }
 
   private hashTokenBeforeBcrypt(token: string) {
