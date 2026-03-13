@@ -141,6 +141,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+  orderId: string;
   orderNumber: string;
   totalAmount: number;
   status: OrderStatus;

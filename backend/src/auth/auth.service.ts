@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as crypto from 'crypto';
+import { RequestWithUser } from './interfaces/request-with-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -61,6 +62,18 @@ export class AuthService {
     });
 
     return { message: 'Logged out successfully' };
+  }
+
+  async getProfile(req: RequestWithUser) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: req.user.sub },
+    });
+    return {
+      id: user?.id,
+      name: user?.name,
+      email: user?.email,
+      role: user?.role,
+    };
   }
 
   async generateTokens(userId: string, email: string, role: string) {

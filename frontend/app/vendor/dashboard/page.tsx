@@ -41,7 +41,6 @@ export default function VendorDashboardPage() {
     }
 
     // Now check auth
-    console.log('user info', user, isHydrated, user?.role);
     if (!user) {
       router.push('/login');
       return;
@@ -325,6 +324,7 @@ export default function VendorDashboardPage() {
 
         {/* Quick Tips */}
         <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+          f
           <CardHeader>
             <CardTitle className="text-lg">💡 Quick Tips</CardTitle>
           </CardHeader>

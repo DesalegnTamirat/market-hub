@@ -11,7 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
-import { ucs2 } from 'punycode';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,10 +19,10 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   const { addToCart } = useCartStore();
-  const { user } = useAuthStore();
+  const { user, checkAuth, logout } = useAuthStore();
 
-  console.log("user", user, user?.role, user?.id, user?.name, user?.email);
   useEffect(() => {
+    checkAuth();
     fetchProducts();
     fetchCategories();
   }, [selectedCategory]);
@@ -65,6 +64,10 @@ export default function HomePage() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -89,6 +92,7 @@ export default function HomePage() {
                       <Button size="sm">Dashboard</Button>
                     </Link>
                   )}
+                  <Button onClick={handleLogout}>Logout</Button>
                 </>
               ) : (
                 <>
