@@ -150,7 +150,7 @@ export default function VendorOrdersPage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {Object.values(groupedOrders).map((group: any) => (
+            {Object.values(groupedOrders).map((group) => (
               <Card key={group.order.id}>
                 <CardHeader>
                   <div className="flex items-start justify-between">

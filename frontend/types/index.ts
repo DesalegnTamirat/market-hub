@@ -132,6 +132,7 @@ export interface OrderItem {
   quantity: number;
   price: number;
   subtotal: number;
+  orderId: string;
   productId: string;
   storeId: string;
   storeName: string;
@@ -141,7 +142,6 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
-  orderId: string;
   orderNumber: string;
   totalAmount: number;
   status: OrderStatus;
