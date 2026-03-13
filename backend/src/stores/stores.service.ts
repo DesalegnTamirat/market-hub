@@ -32,4 +32,33 @@ export class StoresService {
       include: { vendor: true },
     });
   }
+
+  async getStoreById(id: string) {
+    const store = await this.prisma.store.findUnique({
+      where: { id },
+      include: {
+        vendor: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        products: {
+          include: {
+            category: true,
+          },
+        },
+        _count: {
+          select: { products: true },
+        },
+      },
+    });
+
+    if (!store) {
+      throw new Error('Store not found');
+    }
+
+    return store;
+  }
 }

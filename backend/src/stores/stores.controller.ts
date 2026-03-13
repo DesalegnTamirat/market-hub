@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -26,5 +34,10 @@ export class StoresController {
   @Get()
   getAll() {
     return this.storeService.getAllStores();
+  }
+
+  @Get(':id')
+  getOne(@Param('id') id: string) {
+    return this.storeService.getStoreById(id);
   }
 }

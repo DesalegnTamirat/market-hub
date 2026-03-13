@@ -14,10 +14,10 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, ArrowLeft, Minus, Plus } from 'lucide-react';
-import { toast } from 'sonner'; 
+import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
-  const params = useParams();
+  const { id } = useParams();
   const router = useRouter();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -30,16 +30,16 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     fetchProduct();
-  }, [params.id]);
+  }, [id]);
 
   const fetchProduct = async () => {
     try {
       setIsLoading(true);
-      const { data } = await api.get<Product>(`/products/${params.id}`);
+      const { data } = await api.get<Product>(`/products/${id}`);
       setProduct(data);
     } catch (error) {
       console.error('Failed to fetch product:', error);
-      toast.error('Failed to load product'); 
+      toast.error('Failed to load product');
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +57,7 @@ export default function ProductDetailPage() {
         description: `${quantity} item(s) added successfully`,
       });
     } catch (error) {
-      toast.error('Failed to add to cart'); 
+      toast.error('Failed to add to cart');
     }
   };
 

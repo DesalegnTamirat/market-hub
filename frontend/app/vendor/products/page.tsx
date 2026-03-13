@@ -132,71 +132,73 @@ export default function VendorProductsPage() {
             {products.map((product) => (
               <Card key={product.id} className="overflow-hidden">
                 {/* Product Image */}
-                <div className="aspect-square relative bg-gray-200">
-                  {product.images[0] ? (
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <Package className="h-16 w-16 text-gray-400" />
+                <Link href={`products/${product.id}`}>
+                  <div className="aspect-square relative bg-gray-200">
+                    {product.images[0] ? (
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <Package className="h-16 w-16 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Info */}
+                  <CardContent className="p-4">
+                    <div className="mb-3">
+                      <h3 className="font-semibold text-lg truncate">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                        {product.description}
+                      </p>
                     </div>
-                  )}
-                </div>
 
-                {/* Product Info */}
-                <CardContent className="p-4">
-                  <div className="mb-3">
-                    <h3 className="font-semibold text-lg truncate">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-                      {product.description}
-                    </p>
-                  </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xl font-bold">
+                        ${product.price.toFixed(2)}
+                      </span>
+                      <Badge
+                        variant={product.stock > 0 ? 'default' : 'destructive'}
+                      >
+                        {product.stock > 0
+                          ? `${product.stock} in stock`
+                          : 'Out of stock'}
+                      </Badge>
+                    </div>
 
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xl font-bold">
-                      ${product.price.toFixed(2)}
-                    </span>
-                    <Badge
-                      variant={product.stock > 0 ? 'default' : 'destructive'}
-                    >
-                      {product.stock > 0
-                        ? `${product.stock} in stock`
-                        : 'Out of stock'}
-                    </Badge>
-                  </div>
+                    {product.store && (
+                      <p className="text-xs text-gray-500 mb-4">
+                        Store: {product.store.name}
+                      </p>
+                    )}
 
-                  {product.store && (
-                    <p className="text-xs text-gray-500 mb-4">
-                      Store: {product.store.name}
-                    </p>
-                  )}
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/vendor/products/${product.id}/edit`}
-                      className="flex-1"
-                    >
-                      <Button variant="outline" size="sm" className="w-full">
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit
+                    {/* Actions */}
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/vendor/products/${product.id}/edit`}
+                        className="flex-1"
+                      >
+                        <Button variant="outline" size="sm" className="w-full">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
                       </Button>
-                    </Link>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
+                    </div>
+                  </CardContent>
+                </Link>
               </Card>
             ))}
           </div>
