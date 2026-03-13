@@ -33,6 +33,7 @@ export class ProductsService {
         price: createProductDto.price,
         stock: createProductDto.stock,
         storeId: createProductDto.storeId,
+        categoryId: createProductDto.categoryId,
       },
     });
   }

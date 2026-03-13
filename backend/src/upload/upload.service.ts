@@ -63,7 +63,7 @@ export class UploadService {
       where: { id: productId },
       data: {
         images: {
-          push: imageUrls, // Append new URLs to existing array
+          set: [...product.images, ...imageUrls],
         },
       },
     });

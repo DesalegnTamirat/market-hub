@@ -25,4 +25,7 @@ export class CreateProductDto {
 
   @IsString()
   storeId: string;
+
+  @IsString()
+  categoryId: string;
 }
