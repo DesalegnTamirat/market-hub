@@ -17,7 +17,7 @@ import {
   Store as StoreIcon,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Store } from '@/types';
+import { Order, OrderItem, Product, Store } from '@/types';
 
 interface DashboardStats {
   totalProducts: number;
@@ -29,7 +29,7 @@ interface DashboardStats {
 
 export default function VendorDashboardPage() {
   const router = useRouter();
-  const { user, isHydrated, checkAuth } = useAuthStore(); 
+  const { user, isHydrated, checkAuth } = useAuthStore();
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,11 +37,11 @@ export default function VendorDashboardPage() {
   // Wait for hydration before checking auth
   useEffect(() => {
     if (!isHydrated) {
-      return; 
+      return;
     }
 
     // Now check auth
-    console.log("user info", user, isHydrated, user?.role);
+    console.log('user info', user, isHydrated, user?.role);
     if (!user) {
       router.push('/login');
       return;
@@ -74,25 +74,27 @@ export default function VendorDashboardPage() {
       setIsLoading(true);
 
       // Fetch stores
-      const { data: stores } = await api.get('/stores/my-stores');
+      const { data: stores } = await api.get<Store[]>('/stores/my-stores');
 
       // Fetch products (we'll count them)
-      const { data: products } = await api.get('/products');
-      const myProducts = products.filter((p: any) =>
-        stores.some((s: any) => s.id === p.storeId),
+      const { data: products } = await api.get<Product[]>('/products');
+      const myProducts = products.filter((p) =>
+        stores.some((s) => s.id === p.storeId),
       );
 
       // Fetch vendor orders
-      const { data: orders } = await api.get('/orders/vendor/my-orders');
+      const { data: orders } = await api.get<OrderItem[]>(
+        '/orders/vendor/my-orders',
+      );
 
       // Calculate stats
       const totalRevenue = orders.reduce(
-        (sum: number, order: any) => sum + parseFloat(order.subtotal || 0),
+        (sum: number, order) => sum + order.subtotal,
         0,
       );
 
       const pendingOrders = orders.filter(
-        (o: any) => o.status === 'PENDING' || o.status === 'PAID',
+        (o) => o.order.status === 'PENDING' || o.order.status === 'PAID',
       ).length;
 
       setStats({
