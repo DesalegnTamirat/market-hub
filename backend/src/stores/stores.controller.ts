@@ -18,7 +18,7 @@ export class StoresController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
+  @Get('my-stores')
   getMyStores(@Req() req: RequestWithUser) {
     return this.storeService.getMyStores(req.user);
   }

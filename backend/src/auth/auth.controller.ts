@@ -36,11 +36,9 @@ export class AuthController {
   @Get('profile')
   getProfile(@Req() req: RequestWithUser) {
     return {
-      user: {
-        id: req.user.sub,
-        email: req.user.email,
-        role: req.user.role,
-      },
+      id: req.user.sub,
+      email: req.user.email,
+      role: req.user.role,
     };
   }
 }

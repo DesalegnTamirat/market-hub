@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
+import { ucs2 } from 'punycode';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,6 +22,7 @@ export default function HomePage() {
   const { addToCart } = useCartStore();
   const { user } = useAuthStore();
 
+  console.log("user", user, user?.role, user?.id, user?.name, user?.email);
   useEffect(() => {
     fetchProducts();
     fetchCategories();

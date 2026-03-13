@@ -136,6 +136,7 @@ export interface OrderItem {
   storeId: string;
   storeName: string;
   product: Product;
+  order: Order
 }
 
 export interface Order {
@@ -149,6 +150,7 @@ export interface Order {
   updatedAt: string;
   items: OrderItem[];
   payment?: Payment;
+  subtotal: number;
 }
 
 export interface CreateOrderData {
