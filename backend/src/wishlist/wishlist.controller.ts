@@ -10,6 +10,7 @@ import {
 import { WishlistService } from './wishlist.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ToggleWishlistDto } from './dto/toggle-wishlist.dto';
+import { type RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
 
 @Controller('wishlist')
 @UseGuards(AuthGuard('jwt'))
@@ -17,17 +18,20 @@ export class WishlistController {
   constructor(private readonly wishlistService: WishlistService) {}
 
   @Get()
-  getWishlist(@Req() req: any) {
-    return this.wishlistService.getWishlist(req.user.id);
+  getWishlist(@Req() req: RequestWithUser) {
+    return this.wishlistService.getWishlist(req.user.sub);
   }
 
   @Post('toggle')
-  toggleWishlist(@Req() req: any, @Body() dto: ToggleWishlistDto) {
-    return this.wishlistService.toggleWishlist(req.user.id, dto.productId);
+  toggleWishlist(@Req() req: RequestWithUser, @Body() dto: ToggleWishlistDto) {
+    return this.wishlistService.toggleWishlist(req.user.sub, dto.productId);
   }
 
   @Get('check/:productId')
-  checkWishlist(@Req() req: any, @Param('productId') productId: string) {
-    return this.wishlistService.checkWishlist(req.user.id, productId);
+  checkWishlist(
+    @Req() req: RequestWithUser,
+    @Param('productId') productId: string,
+  ) {
+    return this.wishlistService.checkWishlist(req.user.sub, productId);
   }
 }

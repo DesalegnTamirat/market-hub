@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { ShoppingCart, ArrowLeft, Minus, Plus, Star } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Minus, Plus, Star, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
@@ -32,6 +32,9 @@ export default function ProductDetailPage() {
   const [comment, setComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
+
   const { addToCart } = useCartStore();
   const { user } = useAuthStore();
 
@@ -39,6 +42,21 @@ export default function ProductDetailPage() {
     fetchProduct();
     fetchReviews();
   }, [id]);
+
+  useEffect(() => {
+    if (user && id) {
+      checkWishlistStatus();
+    }
+  }, [user, id]);
+
+  const checkWishlistStatus = async () => {
+    try {
+      const { data } = await api.get<{ isWishlisted: boolean }>(`/wishlist/check/${id}`);
+      setIsWishlisted(data.isWishlisted);
+    } catch (error) {
+      console.error('Failed to check wishlist status:', error);
+    }
+  };
 
   const fetchReviews = async () => {
     try {
@@ -75,6 +93,24 @@ export default function ProductDetailPage() {
       });
     } catch (error) {
       toast.error('Failed to add to cart');
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    
+    setIsTogglingWishlist(true);
+    try {
+      const { data } = await api.post<{ added: boolean }>('/wishlist/toggle', { productId: product!.id });
+      setIsWishlisted(data.added);
+      toast.success(data.added ? 'Added to wishlist' : 'Removed from wishlist');
+    } catch (error) {
+      toast.error('Failed to update wishlist');
+    } finally {
+      setIsTogglingWishlist(false);
     }
   };
 
@@ -307,15 +343,26 @@ export default function ProductDetailPage() {
             {/* Add to Cart Button */}
             <Card className="bg-gray-50">
               <CardContent className="pt-6">
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={handleAddToCart}
-                  disabled={product.stock === 0}
-                >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  Add to Cart
-                </Button>
+                <div className="flex gap-4">
+                  <Button
+                    className="flex-1"
+                    size="lg"
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0}
+                  >
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Add to Cart
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={handleToggleWishlist}
+                    disabled={isTogglingWishlist}
+                    className={isWishlisted ? 'text-red-500 border-red-500 hover:bg-red-50' : ''}
+                  >
+                    <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                  </Button>
+                </div>
                 {!user && (
                   <p className="text-sm text-gray-500 text-center mt-3">
                     Please login to add items to cart

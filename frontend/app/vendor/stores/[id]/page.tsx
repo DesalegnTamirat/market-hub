@@ -198,7 +198,7 @@ export default function VendorStoreDetailsPage() {
                       className="text-xs"
                     >
                       {product.stock > 0
-                        ? `${product.stock} in statck`
+                        ? `${product.stock} in stock`
                         : 'Out of stock'}
                     </Badge>
                   </div>

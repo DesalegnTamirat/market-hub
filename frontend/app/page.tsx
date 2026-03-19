@@ -8,7 +8,7 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Heart } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -81,6 +81,12 @@ export default function HomePage() {
                   <span className="text-sm text-gray-600">
                     Welcome, {user.name}
                   </span>
+                  <Link href="/wishlist">
+                    <Button variant="outline" size="sm">
+                      <Heart className="h-4 w-4 mr-2" />
+                      Wishlist
+                    </Button>
+                  </Link>
                   <Link href="/cart">
                     <Button variant="outline" size="sm">
                       <ShoppingCart className="h-4 w-4 mr-2" />
