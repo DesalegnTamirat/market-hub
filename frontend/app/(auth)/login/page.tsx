@@ -55,10 +55,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12 sm:px-6 lg:px-8 text-gray-900 dark:text-gray-100 transition-colors">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+          <CardTitle className="text-2xl font-bold tracking-tight">Login</CardTitle>
           <CardDescription>
             Enter your email and password to access your account
           </CardDescription>
@@ -66,7 +66,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
+              <div className="rounded-md bg-red-50 dark:bg-red-900/10 p-3 text-sm text-red-800 dark:text-red-400">
                 {error}
               </div>
             )}
@@ -105,9 +105,9 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="text-blue-600 hover:underline">
+              <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
                 Register
               </Link>
             </p>

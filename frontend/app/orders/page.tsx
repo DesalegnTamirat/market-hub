@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Package, Clock, Truck, CheckCircle2, ShoppingBag } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 interface Order {
   id: string;
@@ -54,25 +55,33 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 pb-20">
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-10 transition-colors">
         <div className="mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-gray-500 hover:text-gray-700">
+            <Link href="/" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <h1 className="text-xl font-bold italic tracking-tight text-blue-600">MarketHub</h1>
+            <h1 className="text-xl font-bold italic tracking-tight text-blue-600 dark:text-blue-400">MarketHub</h1>
           </div>
-          <h1 className="text-lg font-bold text-gray-800">My Orders</h1>
+          <div className="flex items-center gap-2">
+            {user?.role === 'ADMIN' && (
+              <Link href="/admin">
+                <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+              </Link>
+            )}
+            <h1 className="text-lg font-bold mr-2">My Orders</h1>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8">
         {orders.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 shadow-sm">
-            <ShoppingBag className="h-16 w-16 mx-auto text-gray-200 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No orders yet</h2>
-            <p className="text-gray-500 mb-6">Looks like you haven't made any purchases yet.</p>
+          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+            <ShoppingBag className="h-16 w-16 mx-auto text-gray-200 dark:text-gray-700 mb-4" />
+            <h2 className="text-2xl font-bold mb-2">No orders yet</h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Looks like you haven't made any purchases yet.</p>
             <Link href="/">
               <Button className="rounded-full px-8">Start Shopping</Button>
             </Link>
@@ -80,23 +89,23 @@ export default function MyOrdersPage() {
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <Card key={order.id} className="border-none shadow-sm overflow-hidden hover:ring-2 hover:ring-blue-100 transition-all cursor-pointer" onClick={() => router.push(`/orders/${order.orderNumber}`)}>
+              <Card key={order.id} className="border-none shadow-sm overflow-hidden bg-white dark:bg-gray-900 hover:ring-2 hover:ring-blue-100 dark:hover:ring-blue-900/40 transition-all cursor-pointer" onClick={() => router.push(`/orders/${order.orderNumber}`)}>
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                      <div className="h-12 w-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
                         <Package className="h-6 w-6" />
                       </div>
                       <div>
-                        <p className="text-sm font-mono font-bold text-blue-600">#{order.orderNumber}</p>
-                        <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
+                        <p className="text-sm font-mono font-bold text-blue-600 dark:text-blue-400">#{order.orderNumber}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">{new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-center gap-8">
                       <div className="text-right">
-                        <p className="text-xs text-gray-400 uppercase font-bold tracking-widest">Amount</p>
-                        <p className="text-lg font-black text-gray-900">${order.totalAmount.toFixed(2)}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase font-bold tracking-widest">Amount</p>
+                        <p className="text-lg font-black">${order.totalAmount.toFixed(2)}</p>
                       </div>
                       <div>
                         <Badge className={`${order.status === 'PAID' ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500'} rounded-full px-4 py-1`}>

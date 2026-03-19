@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft } from 'lucide-react';
-import { toast } from 'sonner'; // ✅ UPDATED
+import { toast } from 'sonner';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function CartPage() {
   const router = useRouter();
@@ -72,19 +73,24 @@ export default function CartPage() {
 
   if (cart.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-sm">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
+        <header className="bg-white dark:bg-gray-900 shadow-sm border-b dark:border-gray-800">
           <div className="mx-auto max-w-7xl px-4 py-6">
-            <h1 className="text-2xl font-bold">Shopping Cart</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Shopping Cart</h1>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
         </header>
 
         <main className="mx-auto max-w-7xl px-4 py-16">
-          <Card className="max-w-md mx-auto text-center">
+          <Card className="max-w-md mx-auto text-center bg-white dark:bg-gray-900 border-none shadow-sm">
             <CardContent className="pt-12 pb-12">
-              <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+              <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-gray-400 dark:text-gray-600" />
               <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Add some products to get started!
               </p>
               <Link href="/">
@@ -101,18 +107,26 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white dark:bg-gray-900 shadow-sm transition-colors">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Shopping Cart</h1>
-            <Link href="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Continue Shopping
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              {user?.role === 'ADMIN' && (
+                <Link href="/admin">
+                  <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+                </Link>
+              )}
+              <Link href="/">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Continue Shopping
+                </Button>
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
@@ -122,7 +136,7 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {cart.itemCount} {cart.itemCount === 1 ? 'item' : 'items'} in
                 cart
               </p>
@@ -164,7 +178,7 @@ export default function CartPage() {
                       >
                         {item.product.name}
                       </Link>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         ${item.product.price.toFixed(2)} each
                       </p>
                       {item.product.stock < 10 && item.product.stock > 0 && (
@@ -238,7 +252,7 @@ export default function CartPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-400">
                       Subtotal ({cart.itemCount} items)
                     </span>
                     <span className="font-semibold">
@@ -246,8 +260,8 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Shipping</span>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-400">Shipping</span>
+                    <span className="text-gray-600 dark:text-gray-400">
                       Calculated at checkout
                     </span>
                   </div>

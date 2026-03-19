@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Order, OrderItem, Product, Store } from '@/types';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 interface DashboardStats {
   totalProducts: number;
@@ -133,20 +134,28 @@ export default function VendorDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm transition-colors sticky top-0 z-10">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Vendor Dashboard</h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Welcome back, {user.name}!
               </p>
             </div>
-            <Link href="/">
-              <Button variant="outline">Back to Store</Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              {user?.role === 'ADMIN' && (
+                <Link href="/admin">
+                  <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+                </Link>
+              )}
+              <Link href="/">
+                <Button variant="outline">Back to Store</Button>
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
@@ -177,25 +186,25 @@ export default function VendorDashboardPage() {
         {/* Stats Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Products */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Total Products
               </CardTitle>
-              <Package className="h-5 w-5 text-gray-400" />
+              <Package className="h-5 w-5 text-gray-400 dark:text-gray-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
                 {stats?.totalProducts || 0}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Active listings</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Active listings</p>
             </CardContent>
           </Card>
 
           {/* Total Revenue */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Total Revenue
               </CardTitle>
               <DollarSign className="h-5 w-5 text-green-600" />
@@ -204,14 +213,14 @@ export default function VendorDashboardPage() {
               <div className="text-3xl font-bold">
                 ${stats?.totalRevenue.toFixed(2) || '0.00'}
               </div>
-              <p className="text-xs text-gray-500 mt-1">All time earnings</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">All time earnings</p>
             </CardContent>
           </Card>
 
           {/* Total Orders */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Total Orders
               </CardTitle>
               <ShoppingBag className="h-5 w-5 text-blue-600" />
@@ -220,14 +229,14 @@ export default function VendorDashboardPage() {
               <div className="text-3xl font-bold">
                 {stats?.totalOrders || 0}
               </div>
-              <p className="text-xs text-gray-500 mt-1">All time orders</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">All time orders</p>
             </CardContent>
           </Card>
 
           {/* Pending Orders */}
-          <Card>
+          <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Pending Orders
               </CardTitle>
               <TrendingUp className="h-5 w-5 text-orange-600" />
@@ -236,7 +245,7 @@ export default function VendorDashboardPage() {
               <div className="text-3xl font-bold">
                 {stats?.pendingOrders || 0}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Needs attention</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Needs attention</p>
             </CardContent>
           </Card>
         </div>
@@ -256,7 +265,7 @@ export default function VendorDashboardPage() {
           {stats?.stores && stats.stores.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {stats.stores.map((store) => (
-                <Card key={store.id}>
+                <Card key={store.id} className="bg-white dark:bg-gray-900 border-none shadow-sm">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -278,7 +287,7 @@ export default function VendorDashboardPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-600 line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                       {store.description || 'No description'}
                     </p>
                     <div className="mt-4 flex gap-2">
@@ -304,11 +313,11 @@ export default function VendorDashboardPage() {
               ))}
             </div>
           ) : (
-            <Card>
+            <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
               <CardContent className="py-12 text-center">
-                <StoreIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <StoreIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No stores yet</h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
                   Create your first store to start selling products
                 </p>
                 <Link href="/vendor/stores/new">
@@ -323,12 +332,12 @@ export default function VendorDashboardPage() {
         </div>
 
         {/* Quick Tips */}
-        <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10 border-blue-200 dark:border-blue-800">
           <CardHeader>
             <CardTitle className="text-lg">💡 Quick Tips</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2 text-sm text-gray-700">
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-bold">•</span>
                 <span>

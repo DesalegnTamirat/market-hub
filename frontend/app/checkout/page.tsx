@@ -23,6 +23,7 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
@@ -131,16 +132,16 @@ function CheckoutForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="p-4 border rounded-lg bg-gray-50/50">
         <Label className="text-sm font-medium mb-2 block">Card Details</Label>
-        <div className="bg-white p-3 border rounded-md">
+        <div className="bg-white dark:bg-gray-950 p-3 border dark:border-gray-800 rounded-md">
           <CardElement
             options={{
               style: {
                 base: {
                   fontSize: '16px',
-                  color: '#424770',
-                  '::placeholder': { color: '#aab7c4' },
+                  color: '#9ca3af', // Gray-400 for consistency in dark/light (adaptive would be better but this is safe)
+                  '::placeholder': { color: '#6b7280' },
                 },
-                invalid: { color: '#9e2146' },
+                invalid: { color: '#ef4444' },
               },
             }}
           />
@@ -214,30 +215,40 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <header className="bg-white shadow-sm sticky top-0 z-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors pb-20">
+      <header className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 shadow-sm sticky top-0 z-10">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/cart" className="text-gray-500 hover:text-gray-700">
+            <Link href="/cart" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <h1 className="text-xl font-bold italic tracking-tight text-blue-600">
+            <h1 className="text-xl font-bold italic tracking-tight text-blue-600 dark:text-blue-400">
               MarketHub
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <div
-              className={`flex items-center gap-2 transition-colors ${step === 'shipping' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <Ship className="h-4 w-4" />
-              <span className="text-sm font-medium">Shipping</span>
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-4">
+              <div
+                className={`flex items-center gap-2 transition-colors ${step === 'shipping' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-600'}`}
+              >
+                <Ship className="h-4 w-4" />
+                <span className="text-sm font-medium">Shipping</span>
+              </div>
+              <div className="w-8 h-px bg-gray-200 dark:bg-gray-800" />
+              <div
+                className={`flex items-center gap-2 transition-colors ${step === 'payment' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-600'}`}
+              >
+                <CreditCard className="h-4 w-4" />
+                <span className="text-sm font-medium">Payment</span>
+              </div>
             </div>
-            <div className="w-8 h-px bg-gray-200" />
-            <div
-              className={`flex items-center gap-2 transition-colors ${step === 'payment' ? 'text-blue-600' : 'text-gray-400'}`}
-            >
-              <CreditCard className="h-4 w-4" />
-              <span className="text-sm font-medium">Payment</span>
+            <div className="flex items-center gap-2">
+              {user?.role === 'ADMIN' && (
+                <Link href="/admin">
+                  <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+                </Link>
+              )}
+              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -248,8 +259,8 @@ export default function CheckoutPage() {
           {/* Main Content */}
           <div className="lg:col-span-8">
             {step === 'shipping' ? (
-              <Card className="border-none shadow-sm overflow-hidden">
-                <CardHeader className="bg-white border-b border-gray-100">
+              <Card className="border-none shadow-sm overflow-hidden bg-white dark:bg-gray-900">
+                <CardHeader className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
                   <CardTitle className="text-lg">
                     Shipping Information
                   </CardTitle>
@@ -350,8 +361,8 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="border-none shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
-                <CardHeader className="bg-white border-b border-gray-100 flex flex-row items-center justify-between">
+              <Card className="border-none shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300 bg-white dark:bg-gray-900">
+                <CardHeader className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex flex-row items-center justify-between">
                   <CardTitle className="text-lg">Payment Method</CardTitle>
                   <Button
                     variant="ghost"
@@ -363,18 +374,18 @@ export default function CheckoutPage() {
                   </Button>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <div className="mb-6 bg-blue-50 p-4 rounded-lg flex items-start gap-3">
-                    <Ship className="h-5 w-5 text-blue-600 mt-0.5" />
+                  <div className="mb-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg flex items-start gap-3">
+                    <Ship className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-semibold text-blue-900">
+                      <p className="text-sm font-semibold text-blue-900 dark:text-blue-300">
                         Shipping to:
                       </p>
-                      <p className="text-sm text-blue-800">
+                      <p className="text-sm text-blue-800 dark:text-blue-400">
                         {shippingData?.street}, {shippingData?.city},{' '}
                         {shippingData?.state} {shippingData?.zipCode},{' '}
                         {shippingData?.country}
                       </p>
-                      <p className="text-sm text-blue-800 font-medium mt-1">
+                      <p className="text-sm text-blue-800 dark:text-blue-400 font-medium mt-1">
                         Phone: {shippingData?.phone}
                       </p>
                     </div>
@@ -392,9 +403,9 @@ export default function CheckoutPage() {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-4">
-            <Card className="border-none shadow-sm bg-white overflow-hidden sticky top-24">
-              <CardHeader className="border-b border-gray-50 pb-4">
-                <CardTitle className="text-sm font-bold uppercase tracking-wider text-gray-400">
+            <Card className="border-none shadow-sm bg-white dark:bg-gray-900 overflow-hidden sticky top-24">
+              <CardHeader className="border-b border-gray-50 dark:border-gray-800 pb-4">
+                <CardTitle className="text-sm font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                   Order Summary
                 </CardTitle>
               </CardHeader>
@@ -402,7 +413,7 @@ export default function CheckoutPage() {
                 <div className="max-h-[40vh] overflow-y-auto px-6 py-4 space-y-4">
                   {checkoutItems.map((item) => (
                     <div key={item.id} className="flex gap-3">
-                      <div className="h-16 w-16 rounded overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-50">
+                      <div className="h-16 w-16 rounded overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-800 border border-gray-50 dark:border-gray-700">
                         {item.product.images?.[0] ? (
                           <img
                             src={item.product.images[0]}
@@ -416,13 +427,13 @@ export default function CheckoutPage() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-800 truncate">
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
                           {item.product.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           Qty: {item.quantity}
                         </p>
-                        <p className="text-sm font-bold text-gray-900 mt-1">
+                        <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mt-1">
                           ${(item.product.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
@@ -430,21 +441,21 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                <div className="p-6 bg-gray-50/50 border-t border-gray-100 space-y-3">
-                  <div className="flex justify-between text-sm text-gray-600">
+                <div className="p-6 bg-gray-50/50 dark:bg-gray-800/20 border-t border-gray-100 dark:border-gray-800 space-y-3">
+                  <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                     <span>Subtotal</span>
                     <span>${checkoutSubtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-600">
+                  <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                     <span>Shipping</span>
-                    <span className="text-green-600 font-medium">Free</span>
+                    <span className="text-green-600 dark:text-green-400 font-medium">Free</span>
                   </div>
-                  <Separator className="my-2 bg-gray-200" />
+                  <Separator className="my-2 bg-gray-200 dark:bg-gray-800" />
                   <div className="flex justify-between items-end">
-                    <span className="text-base font-semibold text-gray-900">
+                    <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
                       Total
                     </span>
-                    <span className="text-2xl font-black text-blue-600">
+                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
                       ${checkoutSubtotal.toFixed(2)}
                     </span>
                   </div>
@@ -452,7 +463,7 @@ export default function CheckoutPage() {
               </CardContent>
             </Card>
 
-            <div className="mt-4 flex items-center gap-2 justify-center text-xs text-gray-400">
+            <div className="mt-4 flex items-center gap-2 justify-center text-xs text-gray-400 dark:text-gray-500">
               <CheckCircle2 className="h-3 w-3 text-green-500" />
               Secure Checkout • Powered by Stripe
             </div>

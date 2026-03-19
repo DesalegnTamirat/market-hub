@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HeartOff, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { toast } from 'sonner';
 import { Product } from '@/types';
 
@@ -84,28 +85,39 @@ export default function WishlistPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
+        <div className="mx-auto max-w-7xl px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href="/" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <ArrowLeft className="h-6 w-6" />
+              </Link>
+              <h1 className="text-2xl font-bold">My Wishlist</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              {user?.role === 'ADMIN' && (
+                <Link href="/admin">
+                  <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+                </Link>
+              )}
+              <Link href="/">
+                <Button variant="ghost" size="sm">
+                  Continue Shopping
+                </Button>
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {wishlistItems.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-lg border">
-            <HeartOff className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+          <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-lg border dark:border-gray-800">
+            <HeartOff className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-700 mb-4" />
             <h2 className="text-xl font-semibold mb-2">Your wishlist is empty</h2>
-            <p className="text-gray-500 mb-6">Explore our products and find something you like!</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Explore our products and find something you like!</p>
             <Link href="/">
               <Button>Browse Products</Button>
             </Link>
@@ -154,7 +166,7 @@ export default function WishlistPage() {
                   <div className="flex items-center gap-2 mt-auto pt-2">
                     <Button
                       variant="outline"
-                      className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                      className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10 border-red-200 dark:border-red-900/30"
                       onClick={() => handleRemoveFromWishlist(item.product.id)}
                     >
                       <HeartOff className="h-4 w-4 mr-2" />

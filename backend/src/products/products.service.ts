@@ -38,8 +38,11 @@ export class ProductsService {
     });
   }
 
-  async getAllProducts() {
+  async getAllProducts(categoryId?: string) {
     return this.prisma.product.findMany({
+      where: {
+        ...(categoryId ? { categoryId } : {}),
+      },
       include: {
         store: true,
       },

@@ -13,6 +13,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { UploadModule } from './upload/upload.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { WishlistModule } from './wishlist/wishlist.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
     UploadModule,
     ReviewsModule,
     WishlistModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

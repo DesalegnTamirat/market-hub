@@ -176,9 +176,9 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white dark:bg-gray-900 shadow-sm transition-colors border-b dark:border-gray-800">
         <div className="mx-auto max-w-7xl px-4 py-4">
           <Link
             href="/"
@@ -196,7 +196,7 @@ export default function ProductDetailPage() {
           {/* Image Gallery */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="aspect-square relative bg-white rounded-lg overflow-hidden border">
+            <div className="aspect-square relative bg-white dark:bg-gray-900 rounded-lg overflow-hidden border dark:border-gray-800">
               {product.images[selectedImage] ? (
                 <Image
                   src={product.images[selectedImage]}
@@ -219,10 +219,10 @@ export default function ProductDetailPage() {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square relative bg-white rounded border-2 overflow-hidden transition-all ${
+                    className={`aspect-square relative bg-white dark:bg-gray-900 rounded border-2 overflow-hidden transition-all ${
                       selectedImage === index
-                        ? 'border-blue-500 ring-2 ring-blue-200'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900/40'
+                        : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'
                     }`}
                   >
                     <Image
@@ -241,7 +241,7 @@ export default function ProductDetailPage() {
           <div className="space-y-6">
             {/* Title and Price */}
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold mb-2 tracking-tight">
                 {product.name}
               </h1>
               {product.category && (
@@ -250,7 +250,7 @@ export default function ProductDetailPage() {
                 </Badge>
               )}
               <div className="flex items-baseline gap-4">
-                <p className="text-4xl font-bold text-gray-900">
+                <p className="text-4xl font-bold">
                   ${product.price.toFixed(2)}
                 </p>
                 {product.stock > 0 ? (
@@ -280,7 +280,7 @@ export default function ProductDetailPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     {product.averageRating?.toFixed(1)} ({product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'})
                   </span>
                 </div>
@@ -293,7 +293,7 @@ export default function ProductDetailPage() {
             {product.description && (
               <div>
                 <h2 className="text-lg font-semibold mb-2">Description</h2>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   {product.description}
                 </p>
               </div>
@@ -305,7 +305,7 @@ export default function ProductDetailPage() {
             {product.store && (
               <div>
                 <h2 className="text-lg font-semibold mb-2">Seller</h2>
-                <p className="text-gray-600">{product.store.name}</p>
+                <p className="text-gray-600 dark:text-gray-400">{product.store.name}</p>
               </div>
             )}
 
@@ -334,14 +334,14 @@ export default function ProductDetailPage() {
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Total: ${(product.price * quantity).toFixed(2)}
                 </p>
               </div>
             </div>
 
             {/* Add to Cart Button */}
-            <Card className="bg-gray-50">
+            <Card className="bg-gray-50 dark:bg-gray-900/50 border-none shadow-none">
               <CardContent className="pt-6">
                 <div className="flex gap-4">
                   <Button
@@ -364,7 +364,7 @@ export default function ProductDetailPage() {
                   </Button>
                 </div>
                 {!user && (
-                  <p className="text-sm text-gray-500 text-center mt-3">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-3">
                     Please login to add items to cart
                   </p>
                 )}
@@ -374,18 +374,18 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Reviews Section */}
-        <div className="mt-16 pt-8 border-t border-gray-200">
+        <div className="mt-16 pt-8 border-t dark:border-gray-800">
           <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
           <div className="grid md:grid-cols-2 gap-12">
             
             {/* Reviews List */}
             <div>
               {reviews.length === 0 ? (
-                <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
+                <p className="text-gray-500 dark:text-gray-400">No reviews yet. Be the first to review this product!</p>
               ) : (
                 <div className="space-y-6">
                   {reviews.map((review) => (
-                    <div key={review.id} className="border-b border-gray-100 pb-6 last:border-0">
+                    <div key={review.id} className="border-b border-gray-100 dark:border-gray-800 pb-6 last:border-0">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="flex items-center">
                           {[1, 2, 3, 4, 5].map((star) => (
@@ -399,13 +399,13 @@ export default function ProductDetailPage() {
                             />
                           ))}
                         </div>
-                        <span className="font-semibold text-gray-900">{review.user?.name}</span>
-                        <span className="text-sm text-gray-500">
+                        <span className="font-semibold">{review.user?.name}</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
                           {new Date(review.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                       {review.comment && (
-                        <p className="text-gray-700">{review.comment}</p>
+                        <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
                       )}
                     </div>
                   ))}
@@ -415,18 +415,18 @@ export default function ProductDetailPage() {
 
             {/* Write a Review Form */}
             <div>
-              <Card className="bg-gray-50 border-gray-200">
+              <Card className="bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 shadow-none">
                 <CardContent className="pt-6">
                   <h3 className="text-lg font-semibold mb-4">Write a Review</h3>
                   {!user ? (
                     <div className="text-center py-6">
-                      <p className="text-gray-600 mb-4">Please log in to write a review for this product.</p>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">Please log in to write a review for this product.</p>
                       <Button onClick={() => router.push('/login')}>Login to Review</Button>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmitReview} className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rating</label>
                         <div className="flex items-center gap-1 cursor-pointer">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
@@ -435,7 +435,7 @@ export default function ProductDetailPage() {
                               className={`h-8 w-8 transition-colors ${
                                 star <= rating
                                   ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-300 hover:text-yellow-200'
+                                  : 'text-gray-300 dark:text-gray-700 hover:text-yellow-200 dark:hover:text-yellow-900'
                               }`}
                             />
                           ))}
@@ -443,14 +443,14 @@ export default function ProductDetailPage() {
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Your Review (optional)
                         </label>
                         <Textarea 
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                           placeholder="What did you like or dislike?"
-                          className="min-h-[120px] bg-white"
+                          className="min-h-[120px] bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800"
                         />
                       </div>
 

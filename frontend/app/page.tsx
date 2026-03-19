@@ -12,6 +12,7 @@ import { ShoppingCart, Heart } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
 import { toast } from 'sonner';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -107,16 +108,17 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
       {/* Header */}
-      <header className="bg-white shadow">
+      <header className="bg-white dark:bg-gray-900 shadow-sm transition-colors">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">Marketplace</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Marketplace</h1>
             <div className="flex items-center space-x-4">
+              <ThemeToggle />
               {user ? (
                 <>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     Welcome, {user.name}
                   </span>
                   <Link href="/wishlist">
@@ -131,6 +133,11 @@ export default function HomePage() {
                       Cart
                     </Button>
                   </Link>
+                  {user.role === 'ADMIN' && (
+                    <Link href="/admin">
+                      <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+                    </Link>
+                  )}
                   {user.role === 'VENDOR' && (
                     <Link href="/vendor/dashboard">
                       <Button size="sm">Dashboard</Button>
@@ -156,7 +163,7 @@ export default function HomePage() {
       </header>
 
       {/* Categories */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 sticky top-0 z-10 transition-colors">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex space-x-2 overflow-x-auto">
             <Button
@@ -235,7 +242,7 @@ export default function HomePage() {
                       {product.name}
                     </h3>
                   </Link>
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
                     {product.description}
                   </p>
                   <div className="mt-2 flex items-center justify-between">

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -32,8 +33,8 @@ export class ProductsController {
   }
 
   @Get()
-  getAll() {
-    return this.productsService.getAllProducts();
+  getAll(@Query('categoryId') categoryId?: string) {
+    return this.productsService.getAllProducts(categoryId);
   }
 
   @Get(':id')
