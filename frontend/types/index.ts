@@ -72,6 +72,9 @@ export interface Product {
   updatedAt: string;
   store?: Store;
   category?: Category;
+  averageRating?: number;
+  reviewCount?: number;
+  reviews?: Review[];
 }
 
 export interface CreateProductData {
@@ -81,6 +84,27 @@ export interface CreateProductData {
   stock: number;
   storeId: string;
   categoryId?: string;
+}
+
+// ============================================
+// REVIEW TYPES
+// ============================================
+
+export interface Review {
+  id: string;
+  rating: number;
+  comment?: string;
+  userId: string;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
+  user?: User;
+}
+
+export interface CreateReviewData {
+  rating: number;
+  comment?: string;
+  productId: string;
 }
 
 // ============================================

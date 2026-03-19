@@ -53,9 +53,10 @@ export default function CreateStorePage() {
       await api.post('/stores', data);
       toast.success('Store created successfully!');
       router.push('/vendor/dashboard');
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
       console.error('Failed to create store:', error);
-      toast.error(error.response?.data?.message || 'Failed to create store');
+      toast.error(err.response?.data?.message || 'Failed to create store');
     } finally {
       setIsSubmitting(false);
     }

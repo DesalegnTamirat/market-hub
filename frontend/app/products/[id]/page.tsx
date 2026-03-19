@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Product } from '@/types';
+import { Product, Review } from '@/types';
 import { api } from '@/lib/api';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
@@ -13,7 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, ArrowLeft, Minus, Plus } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { ShoppingCart, ArrowLeft, Minus, Plus, Star } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ProductDetailPage() {
@@ -25,12 +26,28 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Reviews state
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
   const { addToCart } = useCartStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
     fetchProduct();
+    fetchReviews();
   }, [id]);
+
+  const fetchReviews = async () => {
+    try {
+      const { data } = await api.get<Review[]>(`/reviews/product/${id}`);
+      setReviews(data);
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error);
+    }
+  };
 
   const fetchProduct = async () => {
     try {
@@ -58,6 +75,34 @@ export default function ProductDetailPage() {
       });
     } catch (error) {
       toast.error('Failed to add to cart');
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error('Please login to submit a review');
+      return;
+    }
+    
+    setIsSubmittingReview(true);
+    try {
+      await api.post('/reviews', {
+        productId: product!.id,
+        rating,
+        comment
+      });
+      toast.success('Review submitted successfully');
+      setComment('');
+      setRating(5);
+      fetchReviews();
+      fetchProduct(); // to update average rating
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      const msg = err.response?.data?.message || 'Failed to submit review. You can only review products you have purchased, and only once.';
+      toast.error(msg);
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -183,6 +228,27 @@ export default function ProductDetailPage() {
                   <Badge variant="destructive">Out of Stock</Badge>
                 )}
               </div>
+              
+              {/* Product Rating Summary */}
+              {product.reviewCount !== undefined && product.reviewCount > 0 && (
+                <div className="flex items-center gap-2 mt-3">
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-4 w-4 ${
+                          star <= Math.round(product.averageRating || 0)
+                            ? 'text-yellow-400 fill-current'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-600">
+                    {product.averageRating?.toFixed(1)} ({product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'})
+                  </span>
+                </div>
+              )}
             </div>
 
             <Separator />
@@ -257,6 +323,103 @@ export default function ProductDetailPage() {
                 )}
               </CardContent>
             </Card>
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-16 pt-8 border-t border-gray-200">
+          <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            
+            {/* Reviews List */}
+            <div>
+              {reviews.length === 0 ? (
+                <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
+              ) : (
+                <div className="space-y-6">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="border-b border-gray-100 pb-6 last:border-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-4 w-4 ${
+                                star <= review.rating
+                                  ? 'text-yellow-400 fill-current'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="font-semibold text-gray-900">{review.user?.name}</span>
+                        <span className="text-sm text-gray-500">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {review.comment && (
+                        <p className="text-gray-700">{review.comment}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Write a Review Form */}
+            <div>
+              <Card className="bg-gray-50 border-gray-200">
+                <CardContent className="pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Write a Review</h3>
+                  {!user ? (
+                    <div className="text-center py-6">
+                      <p className="text-gray-600 mb-4">Please log in to write a review for this product.</p>
+                      <Button onClick={() => router.push('/login')}>Login to Review</Button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmitReview} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                        <div className="flex items-center gap-1 cursor-pointer">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              onClick={() => setRating(star)}
+                              className={`h-8 w-8 transition-colors ${
+                                star <= rating
+                                  ? 'text-yellow-400 fill-current'
+                                  : 'text-gray-300 hover:text-yellow-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Your Review (optional)
+                        </label>
+                        <Textarea 
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                          placeholder="What did you like or dislike?"
+                          className="min-h-[120px] bg-white"
+                        />
+                      </div>
+
+                      <Button 
+                        type="submit" 
+                        disabled={isSubmittingReview}
+                        className="w-full"
+                      >
+                        {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                      </Button>
+                    </form>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
           </div>
         </div>
       </main>

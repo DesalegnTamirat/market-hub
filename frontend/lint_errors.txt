@@ -1,0 +1,71 @@
+
+> frontend@0.1.0 lint
+> eslint
+
+
+D:\Projects\market-hub\frontend\app\(auth)\login\page.tsx
+  50:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\app\(auth)\register\page.tsx
+  56:15  warning  'confirmPassword' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  60:14  warning  'err' is defined but never used                       @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\app\cart\page.tsx
+  28:6   warning  React Hook useEffect has missing dependencies: 'fetchCart' and 'router'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  36:14  warning  'error' is defined but never used                                                                                            @typescript-eslint/no-unused-vars
+  45:14  warning  'error' is defined but never used                                                                                            @typescript-eslint/no-unused-vars
+  56:14  warning  'error' is defined but never used                                                                                            @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\app\page.tsx
+  28:6  warning  React Hook useEffect has missing dependencies: 'checkAuth' and 'fetchProducts'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Projects\market-hub\frontend\app\products\[id]\page.tsx
+   41:6   warning  React Hook useEffect has missing dependencies: 'fetchProduct' and 'fetchReviews'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   76:14  warning  'error' is defined but never used                                                                                                     @typescript-eslint/no-unused-vars
+  100:21  error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+
+D:\Projects\market-hub\frontend\app\vendor\dashboard\page.tsx
+  20:10  warning  'Order' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+  58:6   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Projects\market-hub\frontend\app\vendor\orders\page.tsx
+  52:6   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  72:14  warning  'error' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\app\vendor\products\[id]\edit\page.tsx
+   74:6   warning  React Hook useEffect has missing dependencies: 'fetchProductData' and 'router'. Either include them or remove the dependency array                                                                                                                                                       react-hooks/exhaustive-deps
+  179:21  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  345:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  372:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\Projects\market-hub\frontend\app\vendor\products\[id]\page.tsx
+  36:6   warning  React Hook useEffect has missing dependencies: 'fetchProduct' and 'router'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  61:14  warning  'error' is defined but never used                                                                                               @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\app\vendor\products\new\page.tsx
+   70:6   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array                                                                                                                                                                                react-hooks/exhaustive-deps
+  159:21  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  336:23  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\Projects\market-hub\frontend\app\vendor\products\page.tsx
+  35:6   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  70:14  warning  'error' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\app\vendor\stores\[id]\page.tsx
+  43:6  warning  React Hook useEffect has missing dependencies: 'fetchStoreDetails' and 'router'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Projects\market-hub\frontend\app\vendor\stores\new\page.tsx
+  47:6   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  56:21  error    Unexpected any. Specify a different type                                                                   @typescript-eslint/no-explicit-any
+
+D:\Projects\market-hub\frontend\app\vendor\stores\page.tsx
+  33:6  warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\Projects\market-hub\frontend\store\auth.store.ts
+  103:18  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Projects\market-hub\frontend\store\cart.store.ts
+  19:53  warning  'get' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 32 problems (4 errors, 28 warnings)
+

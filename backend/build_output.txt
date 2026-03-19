@@ -1,0 +1,40 @@
+
+> markethub-backend@0.0.1 build
+> nest build
+
+[96msrc/reviews/reviews.service.ts[0m:[93m35[0m:[93m46[0m - [91merror[0m[90m TS2339: [0mProperty 'review' does not exist on type 'PrismaService'.
+
+[7m35[0m     const existingReview = await this.prisma.review.findUnique({
+[7m  [0m [91m                                             ~~~~~~[0m
+[96msrc/reviews/reviews.service.ts[0m:[93m48[0m:[93m38[0m - [91merror[0m[90m TS2339: [0mProperty 'review' does not exist on type 'PrismaService'.
+
+[7m48[0m     const review = await this.prisma.review.create({
+[7m  [0m [91m                                     ~~~~~~[0m
+[96msrc/reviews/reviews.service.ts[0m:[93m63[0m:[93m24[0m - [91merror[0m[90m TS2339: [0mProperty 'review' does not exist on type 'PrismaService'.
+
+[7m63[0m     return this.prisma.review.findMany({
+[7m  [0m [91m                       ~~~~~~[0m
+[96msrc/reviews/reviews.service.ts[0m:[93m73[0m:[93m38[0m - [91merror[0m[90m TS2339: [0mProperty 'review' does not exist on type 'PrismaService'.
+
+[7m73[0m     const review = await this.prisma.review.findUnique({ where: { id } });
+[7m  [0m [91m                                     ~~~~~~[0m
+[96msrc/reviews/reviews.service.ts[0m:[93m80[0m:[93m23[0m - [91merror[0m[90m TS2339: [0mProperty 'review' does not exist on type 'PrismaService'.
+
+[7m80[0m     await this.prisma.review.delete({ where: { id } });
+[7m  [0m [91m                      ~~~~~~[0m
+[96msrc/reviews/reviews.service.ts[0m:[93m87[0m:[93m39[0m - [91merror[0m[90m TS2339: [0mProperty 'review' does not exist on type 'PrismaService'.
+
+[7m87[0m     const reviews = await this.prisma.review.findMany({
+[7m  [0m [91m                                      ~~~~~~[0m
+[96msrc/reviews/reviews.service.ts[0m:[93m99[0m:[93m15[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'reviewCount' does not exist in type '(Without<ProductUpdateInput, ProductUncheckedUpdateInput> & ProductUncheckedUpdateInput) | (Without<...> & ProductUpdateInput)'.
+
+[7m99[0m       data: { reviewCount, averageRating },
+[7m  [0m [91m              ~~~~~~~~~~~[0m
+
+  [96mnode_modules/.prisma/client/index.d.ts[0m:[93m6237[0m:[93m5[0m
+    [7m6237[0m     data: XOR<ProductUpdateInput, ProductUncheckedUpdateInput>
+    [7m    [0m [96m    ~~~~[0m
+    The expected type comes from property 'data' which is declared here on type '{ select?: ProductSelect<DefaultArgs> | null | undefined; omit?: ProductOmit<DefaultArgs> | null | undefined; include?: ProductInclude<...> | ... 1 more ... | undefined; data: (Without<...> & ProductUncheckedUpdateInput) | (Without<...> & ProductUpdateInput); where: ProductWhereUniqueInput; }'
+
+Found 7 error(s).
+

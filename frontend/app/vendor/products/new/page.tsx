@@ -156,9 +156,10 @@ export default function CreateProductPage() {
 
       toast.success('Product created successfully!');
       router.push('/vendor/products');
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
       console.error('Failed to create product:', error);
-      toast.error(error.response?.data?.message || 'Failed to create product');
+      toast.error(err.response?.data?.message || 'Failed to create product');
     } finally {
       setIsSubmitting(false);
     }

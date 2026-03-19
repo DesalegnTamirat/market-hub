@@ -167,7 +167,7 @@ export default function EditProductPage() {
       // Upload newly added images if any
       if (images.length > 0) {
         const formData = new FormData();
-        formData.append('productId', id);
+        formData.append('productId', id as string);
         images.forEach((image) => {
           formData.append('images', image);
         });
@@ -176,9 +176,10 @@ export default function EditProductPage() {
 
       toast.success('Product updated successfully!');
       router.push(`/vendor/products/${id}`);
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
       console.error('Failed to update product:', error);
-      toast.error(error.response?.data?.message || 'Failed to update product');
+      toast.error(err.response?.data?.message || 'Failed to update product');
     } finally {
       setIsSubmitting(false);
     }
