@@ -130,9 +130,9 @@ export default function VendorProductsPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden">
+              <Card key={product.id} className="overflow-hidden flex flex-col">
                 {/* Product Image */}
-                <Link href={`products/${product.id}`}>
+                <Link href={`/vendor/products/${product.id}`} className="block">
                   <div className="aspect-square relative bg-gray-200">
                     {product.images[0] ? (
                       <Image
@@ -149,7 +149,7 @@ export default function VendorProductsPage() {
                   </div>
 
                   {/* Product Info */}
-                  <CardContent className="p-4">
+                  <CardContent className="p-4 flex-1">
                     <div className="mb-3">
                       <h3 className="font-semibold text-lg truncate">
                         {product.name}
@@ -159,7 +159,7 @@ export default function VendorProductsPage() {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between">
                       <span className="text-xl font-bold">
                         ${product.price.toFixed(2)}
                       </span>
@@ -173,32 +173,32 @@ export default function VendorProductsPage() {
                     </div>
 
                     {product.store && (
-                      <p className="text-xs text-gray-500 mb-4">
+                      <p className="text-xs text-gray-500 mt-4">
                         Store: {product.store.name}
                       </p>
                     )}
-
-                    {/* Actions */}
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/vendor/products/${product.id}/edit`}
-                        className="flex-1"
-                      >
-                        <Button variant="outline" size="sm" className="w-full">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
                   </CardContent>
                 </Link>
+
+                {/* Actions */}
+                <div className="p-4 pt-0 mt-auto flex gap-2">
+                  <Link
+                    href={`/vendor/products/${product.id}/edit`}
+                    className="flex-1"
+                  >
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(product.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </Card>
             ))}
           </div>

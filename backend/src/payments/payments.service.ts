@@ -152,7 +152,13 @@ export class PaymentsService {
     // Find payment by Stripe payment intent ID
     const payment = await this.prisma.payment.findUnique({
       where: { stripePaymentIntentId: paymentIntent.id },
-      include: { order: true },
+      include: { 
+        order: {
+          include: {
+            items: true
+          }
+        } 
+      },
     });
 
     if (!payment) {
@@ -171,6 +177,27 @@ export class PaymentsService {
       where: { id: payment.orderId },
       data: { status: 'PAID' },
     });
+
+    // Clear user's cart
+    await this.prisma.cartItem.deleteMany({
+      where: {
+        cart: {
+          userId: payment.order.customerId,
+        },
+      },
+    });
+
+    // Reduce product stock
+    for (const item of payment.order.items) {
+      await this.prisma.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: {
+            decrement: item.quantity,
+          },
+        },
+      });
+    }
 
     console.log(`✅ Payment succeeded for order: ${payment.order.orderNumber}`);
 

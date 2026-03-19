@@ -11,12 +11,14 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Heart } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
+import { toast } from 'sonner';
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
 
   const { addToCart } = useCartStore();
   const { user, checkAuth, logout } = useAuthStore();
@@ -25,7 +27,19 @@ export default function HomePage() {
     checkAuth();
     fetchProducts();
     fetchCategories();
-  }, [selectedCategory]);
+    if (user) {
+      fetchWishlist();
+    }
+  }, [selectedCategory, user?.id]);
+
+  const fetchWishlist = async () => {
+    try {
+      const { data } = await api.get<any[]>('/wishlist');
+      setWishlistedIds(new Set(data.map((item) => item.product.id)));
+    } catch (error) {
+      console.error('Failed to fetch wishlist:', error);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -58,9 +72,33 @@ export default function HomePage() {
 
     try {
       await addToCart({ productId, quantity: 1 });
-      alert('Added to cart!');
+      toast.success('Added to cart!');
     } catch (error) {
       console.error('Failed to add to cart:', error);
+      toast.error('Failed to add to cart');
+    }
+  };
+
+  const handleToggleWishlist = async (e: React.MouseEvent, productId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    
+    try {
+      const { data } = await api.post<{ added: boolean }>('/wishlist/toggle', { productId });
+      setWishlistedIds((prev) => {
+        const next = new Set(prev);
+        if (data.added) next.add(productId);
+        else next.delete(productId);
+        return next;
+      });
+      toast.success(data.added ? 'Added to wishlist' : 'Removed from wishlist');
+    } catch (error) {
+      toast.error('Failed to update wishlist');
     }
   };
 
@@ -177,6 +215,18 @@ export default function HomePage() {
                         <p className="text-gray-400">No image</p>
                       </div>
                     )}
+                    <button
+                      onClick={(e) => handleToggleWishlist(e, product.id)}
+                      className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
+                    >
+                      <Heart
+                        className={`h-5 w-5 ${
+                          wishlistedIds.has(product.id)
+                            ? 'fill-red-500 text-red-500'
+                            : 'text-gray-600'
+                        }`}
+                      />
+                    </button>
                   </div>
                 </Link>
                 <CardContent className="p-4">

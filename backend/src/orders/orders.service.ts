@@ -49,6 +49,7 @@ export class OrdersService {
     }, 0);
 
     // Create order with items
+    // Total amount calculation and order creation logic remains...
     const order = await this.prisma.order.create({
       data: {
         customerId: userId,
@@ -73,23 +74,6 @@ export class OrdersService {
           },
         },
       },
-    });
-
-    // Reduce product stock
-    for (const item of cart.items) {
-      await this.prisma.product.update({
-        where: { id: item.productId },
-        data: {
-          stock: {
-            decrement: item.quantity,
-          },
-        },
-      });
-    }
-
-    // Clear cart
-    await this.prisma.cartItem.deleteMany({
-      where: { cartId: cart.id },
     });
 
     return order;
