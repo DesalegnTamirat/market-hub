@@ -33,8 +33,18 @@ export class ProductsController {
   }
 
   @Get()
-  getAll(@Query('categoryId') categoryId?: string) {
-    return this.productsService.getAllProducts(categoryId);
+  getAll(
+    @Query('categoryId') categoryId?: string,
+    @Query('minPrice') minPrice?: string,
+    @Query('maxPrice') maxPrice?: string,
+    @Query('sortBy') sortBy?: string,
+  ) {
+    return this.productsService.getAllProducts(
+      categoryId,
+      minPrice ? parseFloat(minPrice) : undefined,
+      maxPrice ? parseFloat(maxPrice) : undefined,
+      sortBy,
+    );
   }
 
   @Get(':id')

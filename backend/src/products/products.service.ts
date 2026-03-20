@@ -38,14 +38,35 @@ export class ProductsService {
     });
   }
 
-  async getAllProducts(categoryId?: string) {
-    return this.prisma.product.findMany({
-      where: {
-        ...(categoryId ? { categoryId } : {}),
+  async getAllProducts(
+    categoryId?: string,
+    minPrice?: number,
+    maxPrice?: number,
+    sortBy?: string,
+  ) {
+    const where = {
+      ...(categoryId ? { categoryId } : {}),
+      price: {
+        ...(minPrice ? { gte: minPrice } : {}),
+        ...(maxPrice ? { lte: maxPrice } : {}),
       },
+    };
+
+    let orderBy = {};
+    if (sortBy === 'price_asc') {
+      orderBy = { price: 'asc' };
+    } else if (sortBy === 'price_desc') {
+      orderBy = { price: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' }; // 'newest' or default
+    }
+
+    return this.prisma.product.findMany({
+      where,
       include: {
         store: true,
       },
+      orderBy,
     });
   }
 

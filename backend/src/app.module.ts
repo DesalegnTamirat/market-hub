@@ -14,6 +14,7 @@ import { UploadModule } from './upload/upload.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { UsersModule } from './users/users.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UsersModule } from './users/users.module';
     ReviewsModule,
     WishlistModule,
     UsersModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

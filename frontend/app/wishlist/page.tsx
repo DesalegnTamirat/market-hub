@@ -98,7 +98,7 @@ export default function WishlistPage() {
             <div className="flex items-center gap-2">
               {user?.role === 'ADMIN' && (
                 <Link href="/admin">
-                  <Button size="sm" variant="destructive" className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">Admin Panel</Button>
+                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white border-none shadow-sm">Admin Panel</Button>
                 </Link>
               )}
               <Link href="/">

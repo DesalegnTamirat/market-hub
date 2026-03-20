@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { Category } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -74,9 +74,15 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Category Management</h1>
+    <div className="space-y-8 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-black tracking-tighter">Categories</h1>
+          <p className="text-gray-500 font-medium">Organize your products with precision</p>
+        </div>
+        <Button onClick={() => { setIsEditing(null); setFormData({ name: '', description: '' }); }} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6">
+          <Plus className="h-5 w-5 mr-2" /> New Category
+        </Button>
       </div>
 
       <Card>
@@ -120,23 +126,29 @@ export default function AdminCategoriesPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4">
+      <div className="grid gap-6 md:grid-cols-2">
         {isLoading ? (
-          <p>Loading categories...</p>
+          <div className="col-span-full h-40 flex items-center justify-center bg-white dark:bg-gray-900 rounded-3xl border border-dashed border-gray-200 dark:border-gray-800">
+            <p className="text-gray-400 font-medium animate-pulse">Fetching categories...</p>
+          </div>
+        ) : categories.length === 0 ? (
+          <div className="col-span-full h-40 flex items-center justify-center bg-white dark:bg-gray-900 rounded-3xl border border-dashed border-gray-200 dark:border-gray-800">
+            <p className="text-gray-400 font-medium">No categories found. Start by creating one!</p>
+          </div>
         ) : (
           categories.map((category) => (
-            <Card key={category.id} className="bg-white dark:bg-gray-900 border-none shadow-sm">
-              <CardContent className="p-6 flex items-center justify-between">
+            <Card key={category.id} className="bg-white dark:bg-gray-900 border-none shadow-sm hover:shadow-md transition-all group overflow-hidden rounded-3xl">
+              <CardContent className="p-8 flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-lg">{category.name}</h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">{category.description || 'No description'}</p>
+                  <h3 className="font-black text-2xl tracking-tight text-gray-900 dark:text-white mb-1">{category.name}</h3>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium line-clamp-2">{category.description || 'No description provided'}</p>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => startEdit(category)}>
-                    <Edit className="h-4 w-4" />
+                <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button variant="ghost" size="icon" onClick={() => startEdit(category)} className="hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 rounded-full">
+                    <Edit className="h-5 w-5" />
                   </Button>
-                  <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDelete(category.id)}>
-                    <Trash2 className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full" onClick={() => handleDelete(category.id)}>
+                    <Trash2 className="h-5 w-5" />
                   </Button>
                 </div>
               </CardContent>

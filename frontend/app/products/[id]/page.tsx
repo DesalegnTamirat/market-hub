@@ -1,7 +1,7 @@
 // src/app/products/[id]/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,8 +14,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { ShoppingCart, ArrowLeft, Minus, Plus, Star, Heart } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Minus, Plus, Star, Heart, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -176,17 +177,23 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-sm transition-colors border-b dark:border-gray-800">
-        <div className="mx-auto max-w-7xl px-4 py-4">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Products
-          </Link>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors pb-20">
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-20 transition-all shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="group p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <ArrowLeft className="h-6 w-6 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100" />
+            </Link>
+            <h1 className="text-xl font-black tracking-tighter text-blue-600 dark:text-blue-400">MarketHub</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            {user?.role === 'ADMIN' && (
+              <Link href="/admin">
+                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white border-none shadow-sm font-bold">Admin Panel</Button>
+              </Link>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -241,28 +248,39 @@ export default function ProductDetailPage() {
           <div className="space-y-6">
             {/* Title and Price */}
             <div>
-              <h1 className="text-3xl font-bold mb-2 tracking-tight">
+              <h1 className="text-4xl font-black mb-4 tracking-tight leading-tight">
                 {product.name}
               </h1>
-              {product.category && (
-                <Badge variant="secondary" className="mb-4">
-                  {product.category.name}
-                </Badge>
-              )}
-              <div className="flex items-baseline gap-4">
-                <p className="text-4xl font-bold">
-                  ${product.price.toFixed(2)}
-                </p>
-                {product.stock > 0 ? (
-                  <Badge
-                    variant="outline"
-                    className="text-green-600 border-green-600"
-                  >
-                    In Stock ({product.stock} available)
+              <div className="flex items-center gap-3 mb-6">
+                {product.category && (
+                  <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-none px-4 py-1 rounded-full font-bold">
+                    {product.category.name}
                   </Badge>
-                ) : (
-                  <Badge variant="destructive">Out of Stock</Badge>
                 )}
+                {product.store && (
+                  <Link href={`/stores/${product.store.id}`} className="text-sm font-bold text-gray-400 hover:text-blue-500 transition-colors">
+                    by {product.store.name}
+                  </Link>
+                )}
+              </div>
+              
+              <div className="flex items-end gap-6 mb-8">
+                <div>
+                  <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Price</p>
+                  <p className="text-5xl font-black tracking-tighter text-blue-600 dark:text-blue-400">
+                    ${product.price.toFixed(2)}
+                  </p>
+                </div>
+                <div className="pb-1">
+                  {product.stock > 0 ? (
+                    <div className="flex items-center gap-2 text-green-600 font-bold bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-2xl border border-green-100 dark:border-green-900/40">
+                      <CheckCircle2 className="h-5 w-5" />
+                      In Stock ({product.stock})
+                    </div>
+                  ) : (
+                    <Badge variant="destructive" className="px-4 py-2 rounded-2xl font-bold">Out of Stock</Badge>
+                  )}
+                </div>
               </div>
               
               {/* Product Rating Summary */}
