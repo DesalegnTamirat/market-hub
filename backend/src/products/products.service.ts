@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { JwtPayload } from 'src/auth/interfaces/request-with-user.interface';
+import { JwtPayload } from '../auth/interfaces/request-with-user.interface';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()

@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
-import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { type RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
+import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { type RequestWithUser } from '../auth/interfaces/request-with-user.interface';
 import { DeleteImageDto } from './dto/upload-images.dto';
 
 @Controller('upload')

@@ -10,8 +10,8 @@ import {
   type RawBodyRequest,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
-import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
-import { type RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
+import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
+import { type RequestWithUser } from '../auth/interfaces/request-with-user.interface';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Controller('payments')

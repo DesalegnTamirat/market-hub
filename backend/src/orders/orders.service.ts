@@ -4,10 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-import { JwtPayload } from 'src/auth/interfaces/request-with-user.interface';
+import { JwtPayload } from '../auth/interfaces/request-with-user.interface';
 
 @Injectable()
 export class OrdersService {

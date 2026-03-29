@@ -10,7 +10,7 @@ import {
 import { WishlistService } from './wishlist.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ToggleWishlistDto } from './dto/toggle-wishlist.dto';
-import { type RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
+import { type RequestWithUser } from '../auth/interfaces/request-with-user.interface';
 
 @Controller('wishlist')
 @UseGuards(AuthGuard('jwt'))
