@@ -86,7 +86,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
-      <header className="bg-white shadow">
+      <header className="shadow dark:shadow-gray-600">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
