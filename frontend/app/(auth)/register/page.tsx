@@ -35,6 +35,8 @@ const registerSchema = z
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
+import { ShoppingCart } from 'lucide-react';
+
 export default function RegisterPage() {
   const router = useRouter();
   const { register: registerUser, error, clearError } = useAuthStore();
@@ -65,91 +67,98 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12 sm:px-6 lg:px-8 text-gray-900 dark:text-gray-100 transition-colors">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold tracking-tight">
-            Create an account
-          </CardTitle>
-          <CardDescription>
-            Enter your information to create your account
-          </CardDescription>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="absolute top-1/3 -right-20 w-80 h-80 bg-primary/10 blur-[120px] rounded-full" />
+      <div className="absolute bottom-1/3 -left-20 w-80 h-80 bg-secondary/10 blur-[120px] rounded-full" />
+      
+      <Card className="w-full max-w-md glass-dark border-white/10 shadow-2xl relative z-10 p-2">
+        <CardHeader className="space-y-4 text-center">
+          <div className="mx-auto h-12 w-12 bg-primary rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)] mb-2">
+            <ShoppingCart className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <CardTitle className="text-3xl font-black tracking-tight text-white mb-2">Create Account</CardTitle>
+            <CardDescription className="text-muted-foreground font-medium">
+              Join MarketHub and start exploring premium assets
+            </CardDescription>
+          </div>
         </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-2">
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md bg-red-50 dark:bg-red-900/10 p-3 text-sm text-red-800 dark:text-red-400">
+              <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-500 font-bold">
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Full Name</Label>
               <Input
                 id="name"
                 placeholder="John Doe"
+                className="bg-white/5 border-white/10 rounded-xl h-11 focus:ring-primary/20 focus:border-primary/30 transition-all"
                 {...register('name')}
                 disabled={isLoading}
               />
               {errors.name && (
-                <p className="text-sm text-red-600">{errors.name.message}</p>
+                <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider ml-1">{errors.name.message}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Email Address</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="name@example.com"
+                className="bg-white/5 border-white/10 rounded-xl h-11 focus:ring-primary/20 focus:border-primary/30 transition-all"
                 {...register('email')}
                 disabled={isLoading}
               />
               {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
+                <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider ml-1">{errors.email.message}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                {...register('password')}
-                disabled={isLoading}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  className="bg-white/5 border-white/10 rounded-xl h-11 focus:ring-primary/20 focus:border-primary/30 transition-all"
+                  {...register('password')}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="confirmPassword" className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Confirm</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  className="bg-white/5 border-white/10 rounded-xl h-11 focus:ring-primary/20 focus:border-primary/30 transition-all"
+                  {...register('confirmPassword')}
+                  disabled={isLoading}
+                />
+              </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                {...register('confirmPassword')}
-                disabled={isLoading}
-              />
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-600">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
+            {(errors.password || errors.confirmPassword) && (
+              <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider ml-1">
+                {errors.password?.message || errors.confirmPassword?.message}
+              </p>
+            )}
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Creating account...' : 'Create account'}
+          <CardFooter className="flex flex-col gap-6 mt-4">
+            <Button type="submit" className="w-full h-12 rounded-xl font-bold shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all" disabled={isLoading}>
+              {isLoading ? 'Creating Account...' : 'Get Started'}
             </Button>
-            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-center text-xs font-medium text-muted-foreground">
               Already have an account?{' '}
-              <Link href="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
-                Login
+              <Link href="/login" className="text-primary font-bold hover:underline underline-offset-4">
+                Login here
               </Link>
             </p>
           </CardFooter>

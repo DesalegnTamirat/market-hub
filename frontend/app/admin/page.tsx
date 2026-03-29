@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
   AreaChart,
@@ -47,196 +48,206 @@ export default function AdminDashboardPage() {
   if (isLoading) {
     return (
       <div className="space-y-8 animate-pulse">
-        <div className="h-10 w-48 bg-gray-200 dark:bg-gray-800 rounded mb-8" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-32 bg-gray-100 dark:bg-gray-800 rounded-xl" />
+            <div key={i} className="h-40 glass-dark rounded-3xl" />
           ))}
         </div>
+        <div className="h-[400px] glass-dark rounded-3xl" />
       </div>
     );
   }
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-black tracking-tight">Admin Overview</h1>
-          <p className="text-gray-500 font-medium">Real-time platform metrics and management</p>
+          <h1 className="text-4xl font-black tracking-tight text-white">Platform <span className="text-primary underline decoration-primary/30 underline-offset-8">Insight</span></h1>
+          <p className="text-muted-foreground font-medium mt-2">Monitoring growth and performance metrics</p>
         </div>
-        <ThemeToggle />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-white">
         <StatsCard
-          title="Total Users"
-          value={stats?.totalUsers || 0}
-          icon={<Users className="h-5 w-5" />}
-          color="blue"
-        />
-        <StatsCard
-          title="Total Products"
-          value={stats?.totalProducts || 0}
-          icon={<Package className="h-5 w-5" />}
+          title="Revenue"
+          value={`$${stats?.totalRevenue?.toLocaleString() || '0'}`}
+          icon={<DollarSign className="h-4 w-4" />}
+          trend={stats?.revenueTrend || []}
+          dataKey="revenue"
           color="purple"
         />
         <StatsCard
-          title="Categories"
-          value={stats?.totalCategories || 0}
-          icon={<Layers className="h-5 w-5" />}
-          color="indigo"
+          title="Sales"
+          value={stats?.totalOrders || 0}
+          icon={<ShoppingBag className="h-4 w-4" />}
+          trend={stats?.revenueTrend || []} // Using same for demo if specific not avail
+          dataKey="revenue"
+          color="cyan"
         />
         <StatsCard
-          title="Total Revenue"
-          value={`$${stats?.totalRevenue?.toFixed(2) || '0.00'}`}
-          icon={<DollarSign className="h-5 w-5" />}
-          color="green"
+          title="Orders"
+          value={stats?.totalProducts || 0}
+          icon={<Package className="h-4 w-4" />}
+          trend={stats?.revenueTrend || []}
+          dataKey="revenue"
+          color="blue"
+        />
+        <StatsCard
+          title="Growth"
+          value="+2.50%"
+          icon={<TrendingUp className="h-4 w-4" />}
+          trend={stats?.revenueTrend || []}
+          dataKey="revenue"
+          color="cyan"
         />
       </div>
 
-      {/* Revenue Chart */}
-      <div className="mb-8">
-        <Card className="border-none shadow-sm bg-white dark:bg-gray-900 overflow-hidden">
-          <CardHeader className="border-b border-gray-50 dark:border-gray-800 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-black">Revenue Trend (Last 7 Days)</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-[300px] w-full">
+      {/* Main Chart Section */}
+      <Card className="p-0 border-white/5 overflow-hidden">
+        <CardHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between">
+           <div>
+              <CardTitle className="text-xl font-bold text-white">System Analytics</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1 uppercase tracking-widest">Revenue and engagement over time</p>
+           </div>
+           <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
+              <span className="text-xs font-bold text-muted-foreground uppercase">Revenue Trend</span>
+           </div>
+        </CardHeader>
+        <CardContent className="p-8">
+           <div className="h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats?.revenueTrend || []}>
-                  <defs>
-                    <linearGradient id="colorRevenueAdmin" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" className="dark:stroke-gray-800" />
-                  <XAxis
-                    dataKey="date"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#9ca3af' }}
-                    tickFormatter={(str) => {
-                      const d = new Date(str);
-                      return d.toLocaleDateString('en-US', { weekday: 'short' });
-                    }}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#9ca3af' }}
-                    tickFormatter={(val) => `$${val}`}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: 'none',
-                      borderRadius: '12px',
-                      color: '#fff',
-                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                    }}
-                    itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#4f46e5"
-                    strokeWidth={4}
-                    fillOpacity={1}
-                    fill="url(#colorRevenueAdmin)"
-                  />
-                </AreaChart>
+                 <AreaChart data={stats?.revenueTrend || []}>
+                    <defs>
+                       <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="oklch(0.65 0.28 300)" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="oklch(0.65 0.28 300)" stopOpacity={0}/>
+                       </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                    <XAxis 
+                       dataKey="date" 
+                       axisLine={false} 
+                       tickLine={false} 
+                       tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.4)', fontWeight: 600 }}
+                       tickFormatter={(str) => {
+                          const d = new Date(str);
+                          return d.toLocaleDateString('en-US', { weekday: 'short' });
+                       }}
+                    />
+                    <YAxis 
+                       axisLine={false} 
+                       tickLine={false} 
+                       tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.4)', fontWeight: 600 }}
+                       tickFormatter={(val) => `$${val}`}
+                    />
+                    <Tooltip 
+                       contentStyle={{ 
+                          backgroundColor: 'rgba(0,0,0,0.8)', 
+                          backdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255,255,255,0.1)', 
+                          borderRadius: '16px',
+                          boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+                       }}
+                       itemStyle={{ color: 'oklch(0.65 0.28 300)', fontWeight: 'bold' }}
+                    />
+                    <Area 
+                       type="monotone" 
+                       dataKey="revenue" 
+                       stroke="oklch(0.65 0.28 300)" 
+                       strokeWidth={4} 
+                       fillOpacity={1} 
+                       fill="url(#colorRevenue)" 
+                    />
+                 </AreaChart>
               </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+           </div>
+        </CardContent>
+      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Quick Actions */}
-        <div className="lg:col-span-2 grid md:grid-cols-2 gap-6">
-          <Link href="/admin/users">
-            <Card className="hover:shadow-md transition-all cursor-pointer border-none bg-white dark:bg-gray-900 group">
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <Users className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Manage Users</h3>
-                  <p className="text-sm text-gray-500">Update roles and view activity</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-
-          <Link href="/admin/categories">
-            <Card className="hover:shadow-md transition-all cursor-pointer border-none bg-white dark:bg-gray-900 group">
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                  <Layers className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Categories</h3>
-                  <p className="text-sm text-gray-500">Create and organize categories</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-
-        {/* Order Distribution */}
-        <Card className="border-none shadow-sm bg-white dark:bg-gray-900">
-          <CardHeader className="border-b border-gray-50 dark:border-gray-800">
-            <CardTitle className="text-lg font-black">Order Distribution</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              {stats?.ordersByStatus?.map((item: any) => (
-                <div key={item.status} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className={`h-2 w-2 rounded-full ${
-                      item.status === 'DELIVERED' ? 'bg-green-500' :
-                      item.status === 'PENDING' ? 'bg-orange-500' :
-                      'bg-blue-500'
-                    }`} />
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-tighter">
-                      {item.status}
-                    </span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+         <Card className="p-8 border-white/5">
+            <h3 className="text-lg font-bold text-white mb-6">Quick Actions</h3>
+            <div className="grid grid-cols-2 gap-4">
+               <Link href="/admin/users" className="group">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-primary/10 hover:border-primary/20 transition-all duration-300">
+                     <Users className="h-6 w-6 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                     <p className="font-bold text-sm text-white">Users</p>
+                     <p className="text-[10px] text-muted-foreground mt-1">Manage accounts</p>
                   </div>
-                  <span className="text-sm font-black">{item._count}</span>
-                </div>
-              ))}
-              {(!stats?.ordersByStatus || stats.ordersByStatus.length === 0) && (
-                <p className="text-sm text-gray-500 text-center py-8">No order data available</p>
-              )}
+               </Link>
+               <Link href="/admin/categories" className="group">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-secondary/10 hover:border-secondary/20 transition-all duration-300">
+                     <Layers className="h-6 w-6 text-secondary mb-3 group-hover:scale-110 transition-transform" />
+                     <p className="font-bold text-sm text-white">Categories</p>
+                     <p className="text-[10px] text-muted-foreground mt-1">Organize shop</p>
+                  </div>
+               </Link>
             </div>
-          </CardContent>
-        </Card>
+         </Card>
+
+         <Card className="p-8 border-white/5">
+            <h3 className="text-lg font-bold text-white mb-6">Order Summary</h3>
+            <div className="space-y-4">
+               {stats?.ordersByStatus?.map((item: any) => (
+                  <div key={item.status} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                     <div className="flex items-center gap-3">
+                        <div className={cn(
+                           "h-2 w-2 rounded-full shadow-[0_0_8px_currentColor]",
+                           item.status === 'DELIVERED' ? 'text-secondary bg-secondary' :
+                           item.status === 'PENDING' ? 'text-orange-500 bg-orange-500' :
+                           'text-primary bg-primary'
+                        )} />
+                        <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{item.status}</span>
+                     </div>
+                     <span className="text-sm font-black text-white">{item._count}</span>
+                  </div>
+               ))}
+            </div>
+         </Card>
       </div>
     </div>
   );
 }
 
-function StatsCard({ title, value, icon, color }: { title: string, value: string | number, icon: React.ReactNode, color: string }) {
-  const colorClasses: Record<string, string> = {
-    blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
-    purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-    orange: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
-    green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
-  };
-
+function StatsCard({ title, value, icon, trend, dataKey, color }: { title: string, value: string | number, icon: React.ReactNode, trend: any[], dataKey: string, color: 'purple' | 'cyan' | 'blue' }) {
+  const chartColor = color === 'purple' ? 'oklch(0.65 0.28 300)' : color === 'cyan' ? 'oklch(0.7 0.18 200)' : 'oklch(0.65 0.25 240)';
+  
   return (
-    <Card className="border-none shadow-sm bg-white dark:bg-gray-900 hover:shadow-md transition-all duration-300">
-      <CardContent className="p-6 flex items-center justify-between">
+    <Card className="p-6 border-white/5 hover:neon-border-purple transition-all duration-500 group">
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{title}</p>
-          <p className="text-3xl font-black mt-2">{value}</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">{title}</p>
+          <p className="text-2xl font-black mt-1 group-hover:text-glow transition-all">{value}</p>
         </div>
-        <div className={`p-4 rounded-2xl ${colorClasses[color] || colorClasses.blue}`}>
+        <div className={cn(
+           "p-2 rounded-xl border border-white/10 glass-dark group-hover:scale-110 transition-transform",
+           color === 'purple' ? 'text-primary' : 'text-secondary'
+        )}>
           {icon}
         </div>
-      </CardContent>
+      </div>
+      
+      <div className="h-16 w-full -mb-2">
+         <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trend}>
+               <defs>
+                  <linearGradient id={`grad-${title}`} x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="5%" stopColor={chartColor} stopOpacity={0.2}/>
+                     <stop offset="95%" stopColor={chartColor} stopOpacity={0}/>
+                  </linearGradient>
+               </defs>
+               <Area 
+                  type="monotone" 
+                  dataKey={dataKey} 
+                  stroke={chartColor} 
+                  strokeWidth={2} 
+                  fillOpacity={1} 
+                  fill={`url(#grad-${title})`} 
+               />
+            </AreaChart>
+         </ResponsiveContainer>
+      </div>
     </Card>
   );
 }

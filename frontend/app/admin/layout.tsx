@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, ListTree, Users, ArrowLeft, LogOut } from 'lucide-react';
+import { LayoutDashboard, ListTree, Users, ArrowLeft, LogOut, ShoppingCart } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { cn } from '@/lib/utils';
 
 export default function AdminLayout({
   children,
@@ -24,8 +25,8 @@ export default function AdminLayout({
 
   if (!isHydrated || !user || user.role !== 'ADMIN') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <p className="text-gray-500">Loading admin panel...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-muted-foreground animate-pulse">Loading MarketHub...</p>
       </div>
     );
   }
@@ -35,60 +36,106 @@ export default function AdminLayout({
     router.push('/login');
   };
 
+  const navItems = [
+    { name: 'Dashboard', icon: LayoutDashboard, href: '/admin', active: true },
+    { name: 'Products', icon: ListTree, href: '/admin/categories' },
+    { name: 'Orders', icon: ShoppingCart, href: '#' },
+    { name: 'Customers', icon: Users, href: '/admin/users' },
+    { name: 'Analytics', icon: ListTree, href: '#' },
+    { name: 'Marketing', icon: LayoutDashboard, href: '#' },
+    { name: 'Settings', icon: ListTree, href: '#' },
+    { name: 'Help', icon: ListTree, href: '#' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col md:flex-row">
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
-          <Link href="/admin" className="flex items-center gap-2">
-            <LayoutDashboard className="h-6 w-6 text-blue-600" />
-            <span className="font-bold text-xl">Admin Panel</span>
-          </Link>
-          <div className="md:hidden">
-            <ThemeToggle />
+    <div className="min-h-screen bg-background text-foreground flex overflow-hidden">
+      {/* Sidebar - Glassmorphic */}
+      <aside className="w-64 glass-dark m-4 mr-0 rounded-3xl hidden md:flex flex-col border-white/5">
+        <div className="p-8 flex items-center gap-3">
+          <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+            <LayoutDashboard className="h-5 w-5 text-white" />
           </div>
+          <span className="font-bold text-2xl tracking-tight text-white">Market<span className="text-primary italic">Hub</span></span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2">
-          <Link href="/admin/categories">
-            <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-              <ListTree className="h-5 w-5" />
-              Categories
-            </Button>
-          </Link>
-          <Link href="/admin/users">
-            <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-              <Users className="h-5 w-5" />
-              Users
-            </Button>
-          </Link>
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
-            <Link href="/">
-              <Button variant="ghost" className="w-full justify-start gap-3 h-10 text-gray-500">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Site
+        <nav className="flex-1 px-4 space-y-1 mt-4">
+          {navItems.map((item) => (
+            <Link key={item.name} href={item.href}>
+              <Button 
+                variant="ghost" 
+                className={cn(
+                  "w-full justify-start gap-4 h-12 rounded-xl transition-all duration-300",
+                  item.active 
+                    ? "bg-primary/20 text-primary border-r-4 border-primary shadow-[inset_0_0_20px_rgba(168,85,247,0.1)]" 
+                    : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                )}
+              >
+                <item.icon className={cn("h-5 w-5", item.active && "text-primary")} />
+                <span className="font-medium">{item.name}</span>
               </Button>
             </Link>
-          </div>
+          ))}
         </nav>
 
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
-          <div className="hidden md:block">
-            <ThemeToggle />
-          </div>
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10">
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
+        <div className="p-4 mt-auto">
+          <Button 
+            variant="ghost" 
+            onClick={handleLogout} 
+            className="w-full justify-start gap-4 h-12 text-red-500 hover:bg-red-500/10 rounded-xl"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="font-medium">Logout</span>
           </Button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          {children}
-        </div>
-      </main>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Header - Glassmorphic */}
+        <header className="h-20 flex items-center justify-between px-8 mx-4 mt-4 rounded-3xl glass-dark border-white/5">
+          <div className="flex items-center flex-1 max-w-md">
+             <div className="relative w-full group">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                   <ListTree className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Search products, orders..." 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 transition-all"
+                />
+             </div>
+          </div>
+
+          <div className="flex items-center gap-4 ml-4">
+            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-white/5">
+              <ListTree className="h-5 w-5 text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-white/5">
+              <Users className="h-5 w-5 text-muted-foreground" />
+            </Button>
+            <div className="h-8 w-[1px] bg-white/10 mx-2" />
+            <div className="flex items-center gap-3 pl-2">
+               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-secondary p-[1px]">
+                  <div className="h-full w-full rounded-xl bg-background flex items-center justify-center overflow-hidden">
+                     <span className="text-xs font-bold">{user.name.charAt(0)}</span>
+                  </div>
+               </div>
+               <div className="hidden lg:block">
+                  <p className="text-sm font-bold text-white leading-none">{user.name}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Admin Account</p>
+               </div>
+            </div>
+            <ThemeToggle />
+          </div>
+        </header>
+
+        {/* Main Scrollable Content */}
+        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto space-y-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
