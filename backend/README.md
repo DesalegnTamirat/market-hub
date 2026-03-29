@@ -21,9 +21,46 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# MarketHub Backend ⚙️
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The MarketHub backend is a powerful RESTful API built with NestJS and Prisma, providing a secure and scalable foundation for the e-commerce ecosystem.
+
+## 🛠️ Tech Stack
+
+- **NestJS**: A progressive Node.js framework for building efficient server-side applications.
+- **Prisma**: Next-generation Node.js and TypeScript ORM for easy database management.
+- **PostgreSQL**: Robust, open-source relational database.
+- **Passport/JWT**: Secure authentication and session management.
+- **Cloudinary**: Cloud-based image management for product assets.
+- **Stripe**: Integrated payment processing logic.
+
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+npm install
+```
+
+### Environment Variables
+
+Configure your `.env` file with the following:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/markethub"
+JWT_ACCESS_SECRET="your-access-secret"
+JWT_REFRESH_SECRET="your-refresh-secret"
+CLOUDINARY_CLOUD_NAME="your-cloud-name"
+CLOUDINARY_API_KEY="your-api-key"
+CLOUDINARY_API_SECRET="your-api-secret"
+STRIPE_SECRET_KEY="your-stripe-key"
+```
+
+### Database Migration
+
+```bash
+npx prisma migrate dev
+```
 
 ## Project setup
 

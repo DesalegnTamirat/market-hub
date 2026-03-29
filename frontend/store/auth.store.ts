@@ -83,17 +83,24 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        // Call backend logout endpoint
-        api.post('/auth/logout').catch(() => {
-          // Ignore errors, logout anyway
-        });
+        const token = get().accessToken;
 
-        // Clear state
+        // Clear state immediately to prevent loops and ensure UI updates
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
         });
+
+        // ONLY call backend logout if we were actually logged in
+        if (token) {
+          api.post('/auth/logout', {}, { 
+            // Signal to interceptor not to retry/handle 401 for this request
+            ...( { _retry: true } as any )
+          }).catch(() => {
+            // Ignore errors, we've already cleared local state
+          });
+        }
       },
 
       checkAuth: async () => {
